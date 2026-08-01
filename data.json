@@ -1,0 +1,22 @@
+{
+  "updated_at": "2026-07-31T13:10:00+00:00",
+  "_nota": "Arquivo semente com dados reais de exemplo. Sera sobrescrito automaticamente pelo GitHub Actions na primeira execucao (rode o workflow 'Atualizar dados').",
+  "macro": {
+    "market_cap_usd": 2301003681390,
+    "volume_24h_usd": 244584982727,
+    "btc_dominance": 56.2,
+    "eth_dominance": null,
+    "cryptocurrencies_number": 11429,
+    "market_cap_change_24h": 0.06,
+    "top_coins": [
+      { "name": "Bitcoin", "symbol": "BTC", "price": 63688.95, "market_cap": 1277839234311, "change_24h": -1.61 }
+    ],
+    "dominance": [
+      { "symbol": "BTC", "pct": 56.2 },
+      { "symbol": "Outros", "pct": 43.8 }
+    ]
+  },
+  "rwa": null,
+  "stables": null,
+  "defi": null
+}
