@@ -135,6 +135,7 @@
       <button class="navi" data-tab="rwa"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span data-i18n="tabRwa">Tokenized RWA</span></button>
       <button class="navi" data-tab="defi"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.6 7.4L11 15.4M16.4 7.4L13 15.4M8 6h8"/></svg><span data-i18n="tabDefi">DeFi by Network</span></button>
       <button class="navi" data-tab="green"><svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 014 13c0-5 4-9 12-9 0 6-2 12-5 16z"/><path d="M11 20c-1-4 1-8 5-11"/></svg><span data-i18n="tabGreen">Green assets</span></button>
+      <button class="navi" data-tab="treasury"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/></svg><span data-i18n="tabTreasury">Treasuries</span></button>
       <button class="navi" data-tab="stables"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.2h4a1.8 1.8 0 010 3.6h-3a1.8 1.8 0 000 3.6h4"/></svg><span data-i18n="tabStables">Stablecoins</span></button>
     </nav>
     <div class="side-foot">
@@ -165,6 +166,7 @@
         <div class="card"><div class="cardhead"><div><h3 data-i18n="macroC1T">Top 10 assets by market cap</h3></div></div><div class="cc"><canvas id="chTopCoins"></canvas></div><div class="empty" id="e-coins" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
         <div class="card"><div class="cardhead"><div><h3 data-i18n="macroC2T">Market dominance</h3></div></div><div class="cc"><canvas id="chDominance"></canvas></div></div>
       </div>
+      <div class="card mt"><div class="cardhead"><div><h3 data-i18n="sectorsT">Crypto sectors by market cap</h3><p class="hint" data-i18n="sectorsH">Top categories by market value. Categories can overlap. Source: CoinGecko.</p></div></div><div class="cc" style="height:420px"><canvas id="chSectors"></canvas></div><div class="empty" id="e-sectors" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
       <div class="card mt"><div class="cardhead"><div><h3 data-i18n="moversT">24h movers</h3><p class="hint" data-i18n="moversH">Biggest gainers and losers among the top 50.</p></div></div>
         <div class="movers"><div class="mv"><h4 data-i18n="gainers">Top gainers</h4><div id="gainers"></div></div><div class="mv"><h4 data-i18n="losers">Top losers</h4><div id="losers"></div></div></div>
       </div>
@@ -206,6 +208,20 @@
         <div style="overflow:auto"><table id="rwaTable"><thead><tr><th class="rank">#</th><th data-i18n="thProto">Protocol</th><th data-i18n="thCat">Category</th><th data-i18n="thNetworks">Networks</th><th class="num">TVL</th><th class="num">24h</th></tr></thead><tbody></tbody></table></div>
       </div>
     </section>
+    <!-- TREASURY -->
+    <section class="page" id="page-treasury">
+      <h2 class="ptitle" data-i18n="tabTreasury">Treasuries</h2>
+      <p class="hint" style="margin:-8px 0 16px;max-width:70ch" data-i18n="trH">Public companies holding BTC and ETH in treasury. Source: CoinGecko.</p>
+      <div class="hero"><div><div class="lbl" data-i18n="trHero">Total BTC held by companies (value)</div><div class="big" id="k-tr-btc">—</div></div></div>
+      <div class="strip">
+        <div class="stat"><div class="k" data-i18n="trBtcAmt">BTC held</div><div class="v" id="k-tr-btc-amt">—</div></div>
+        <div class="stat"><div class="k" data-i18n="trDom">% of BTC supply</div><div class="v" id="k-tr-dom">—</div></div>
+        <div class="stat"><div class="k" data-i18n="trEth">Total ETH held (value)</div><div class="v" id="k-tr-eth">—</div></div>
+      </div>
+      <div class="card"><div class="cardhead"><div><h3 data-i18n="trTableT">Top public companies holding BTC</h3></div><input class="search" id="trSearch" data-ph="searchPh" placeholder="Search…"/></div>
+        <div style="overflow:auto"><table id="trTable"><thead><tr><th class="rank">#</th><th data-i18n="thCompany">Company</th><th data-i18n="thCountry">Country</th><th class="num" data-i18n="thHeld">BTC held</th><th class="num" data-i18n="thValue">Value</th><th class="num" data-i18n="thPctSupply">% supply</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </section>
     <!-- STABLECOINS -->
     <section class="page" id="page-stables">
       <h2 class="ptitle" data-i18n="tabStables">Stablecoins</h2>
@@ -221,6 +237,8 @@
       <h2 class="ptitle" data-i18n="tabDefi">DeFi by Network</h2>
       <div class="hero"><div><div class="lbl" data-i18n="kTvl">Total DeFi TVL</div><div class="big" id="k-tvl">—</div></div></div>
       <div class="strip">
+        <div class="stat"><div class="k" data-i18n="kDefiMcap">DeFi market cap</div><div class="v" id="k-defi-mcap">—</div></div>
+        <div class="stat"><div class="k" data-i18n="kDefiDom">DeFi dominance</div><div class="v" id="k-defi-dom">—</div></div>
         <div class="stat"><div class="k" data-i18n="kStable">Stablecoin cap</div><div class="v" id="k-stable">—</div></div>
         <div class="stat"><div class="k" data-i18n="kChains">Networks tracked</div><div class="v" id="k-chains">—</div></div>
       </div>
@@ -250,6 +268,7 @@ const DICT={
     rwaC1T:"Top RWA protocols by TVL",rwaHistT:"RWA growth by category (DeFi TVL)",rwaC2T:"Detailed ranking",rwaC2H:"TVL, networks and 24h change.",thProto:"Protocol",thNetworks:"Networks",thNetwork:"Network",thCat:"Category",
     stblHero:"Total stablecoin cap",stblCount:"Stablecoins tracked",stblHistT:"Stablecoin supply over time",stblTableT:"Top stablecoins",thStable:"Stablecoin",thPeg:"Peg",thCap:"Market cap",
     kTvl:"Total DeFi TVL",kStable:"Stablecoin cap",kChains:"Networks tracked",tvlHistT:"DeFi TVL over time",defiC1T:"Top 15 networks by TVL",defiC2T:"Network ranking",
+    kDefiMcap:"DeFi market cap",kDefiDom:"DeFi dominance",sectorsT:"Crypto sectors by market cap",sectorsH:"Top categories by market value. Categories can overlap. Source: CoinGecko.",tabTreasury:"Treasuries",trH:"Public companies holding BTC and ETH in treasury. Source: CoinGecko.",trHero:"Total BTC held by companies (value)",trBtcAmt:"BTC held",trDom:"% of BTC supply",trEth:"Total ETH held (value)",trTableT:"Top public companies holding BTC",thCompany:"Company",thCountry:"Country",thHeld:"BTC held",thValue:"Value",thPctSupply:"% supply",
     await:"Awaiting the first data collection.",devBy:"Developed by",searchPh:"Search…",exportImg:"Save as PNG",exportCsv:"Export CSV",
     catTreasuries:"Treasuries",catPrivate_credit:"Private credit",catReal_estate:"Real estate",catCommodities:"Commodities",catEquities:"Equities",catOther:"Other",
     lblMcap:"Market cap (US$)",lblTvl:"TVL (US$)",lblSupply:"Supply (US$)",
@@ -269,6 +288,7 @@ const DICT={
     rwaC1T:"Top protocolos RWA por TVL",rwaHistT:"Evolução do RWA por categoria (TVL em DeFi)",rwaC2T:"Ranking detalhado",rwaC2H:"TVL, redes e variação em 24h.",thProto:"Protocolo",thNetworks:"Redes",thNetwork:"Rede",thCat:"Categoria",
     stblHero:"Cap. total de stablecoins",stblCount:"Stablecoins monitoradas",stblHistT:"Evolução da oferta de stablecoins",stblTableT:"Maiores stablecoins",thStable:"Stablecoin",thPeg:"Lastro",thCap:"Cap. mercado",
     kTvl:"TVL total em DeFi",kStable:"Cap. de stablecoins",kChains:"Redes monitoradas",tvlHistT:"Evolução do TVL em DeFi",defiC1T:"Top 15 redes por TVL",defiC2T:"Ranking de redes",
+    kDefiMcap:"Cap. de mercado DeFi",kDefiDom:"Dominância DeFi",sectorsT:"Setores por capitalização",sectorsH:"Maiores categorias por valor de mercado. Categorias podem se sobrepor. Fonte: CoinGecko.",tabTreasury:"Tesourarias",trH:"Empresas públicas com BTC e ETH em tesouraria. Fonte: CoinGecko.",trHero:"Total de BTC em empresas (valor)",trBtcAmt:"BTC detido",trDom:"% do supply de BTC",trEth:"Total de ETH (valor)",trTableT:"Maiores empresas públicas com BTC",thCompany:"Empresa",thCountry:"País",thHeld:"BTC detido",thValue:"Valor",thPctSupply:"% do supply",
     await:"Aguardando a primeira coleta de dados.",devBy:"Desenvolvido por",searchPh:"Buscar…",exportImg:"Salvar como PNG",exportCsv:"Exportar CSV",
     catTreasuries:"Tesouraria",catPrivate_credit:"Crédito privado",catReal_estate:"Imóveis",catCommodities:"Commodities",catEquities:"Ações",catOther:"Outros",
     lblMcap:"Cap. de mercado (US$)",lblTvl:"TVL (US$)",lblSupply:"Oferta (US$)",
@@ -431,6 +451,9 @@ function renderStables(s){
 function renderDefi(d){
   if(!d)return;
   el('k-tvl').textContent=fmtUSD(d.total_tvl);
+  var gg=d.global||{};
+  el('k-defi-mcap').textContent=fmtUSD(gg.market_cap);
+  el('k-defi-dom').textContent=gg.dominance!=null?gg.dominance.toFixed(1)+'%':'—';
   el('k-stable').textContent=fmtUSD(d.stablecoins_total);
   el('k-chains').textContent=d.chains_count!=null?d.chains_count.toLocaleString(loc()):'—';
   if(d.tvl_history&&d.tvl_history.length)histChart('chTvlHist',d.tvl_history,t('lblTvl'));
@@ -439,11 +462,31 @@ function renderDefi(d){
   else el('e-defi').style.display='block';
   el('chainTable').tBodies[0].innerHTML=cs.map((c,i)=>`<tr><td class="rank">${i+1}</td><td class="nm">${c.name||''}</td><td class="num" data-v="${c.tvl??''}">${fmtUSD(c.tvl)}</td></tr>`).join('')||emptyRow(3);
 }
+function renderSectors(list){
+  if(!list||!list.length){el('e-sectors').style.display='block';return;}
+  el('e-sectors').style.display='none';
+  var top=list.slice(0,12),d=top.map(function(x){return x.market_cap;});
+  barY('chSectors',top.map(function(x){return x.name;}),d,t('lblMcap'),null,Math.max.apply(null,d)*1.02);
+}
+function renderTreasury(tr){
+  if(!tr)return;
+  var b=tr.btc||{},e=tr.eth||{};
+  el('k-tr-btc').textContent=fmtUSD(b.total_value_usd);
+  el('k-tr-btc-amt').textContent=b.total_holdings!=null?Math.round(b.total_holdings).toLocaleString(loc())+' BTC':'—';
+  el('k-tr-dom').textContent=b.market_cap_dominance!=null?b.market_cap_dominance.toFixed(2)+'%':'—';
+  el('k-tr-eth').textContent=fmtUSD(e.total_value_usd);
+  el('trTable').tBodies[0].innerHTML=(b.companies||[]).map(function(c,i){
+    return '<tr><td class="rank">'+(i+1)+'</td><td class="nm">'+(c.name||'')+'</td><td style="color:var(--muted)">'+(c.country||'')+'</td>'
+      +'<td class="num" data-v="'+(c.holdings==null?'':c.holdings)+'">'+(c.holdings!=null?Math.round(c.holdings).toLocaleString(loc()):'—')+'</td>'
+      +'<td class="num" data-v="'+(c.value_usd==null?'':c.value_usd)+'">'+fmtUSD(c.value_usd)+'</td>'
+      +'<td class="num" data-v="'+(c.pct_supply==null?'':c.pct_supply)+'">'+(c.pct_supply!=null?c.pct_supply.toFixed(3)+'%':'—')+'</td></tr>';
+  }).join('')||emptyRow(6);
+}
 function renderAll(){
   clearCharts();
   if(LAST){
     if(LAST.updated_at)el('updated').textContent=new Date(LAST.updated_at).toLocaleString(loc());
-    renderFng(LAST.fng);renderMacro(LAST.macro);renderGreen(LAST.green);renderRwa(LAST.rwa);renderStables(LAST.stables);renderDefi(LAST.defi);
+    renderFng(LAST.fng);renderMacro(LAST.macro);renderSectors(LAST.sectors);renderGreen(LAST.green);renderRwa(LAST.rwa);renderTreasury(LAST.treasury);renderStables(LAST.stables);renderDefi(LAST.defi);
   }
 }
 /* ---- ordenação + busca ---- */
@@ -536,15 +579,15 @@ document.addEventListener('click',function(ev){
 });
 /* ===================== INÍCIO ===================== */
 async function init(){
-  ['coinTable','greenTable','rwaTable','stblTable','chainTable'].forEach(enhanceTable);
-  enhanceSearch('coinSearch','coinTable');enhanceSearch('greenSearch','greenTable');
+  ['coinTable','greenTable','rwaTable','trTable','stblTable','chainTable'].forEach(enhanceTable);
+  enhanceSearch('coinSearch','coinTable');enhanceSearch('greenSearch','greenTable');enhanceSearch('trSearch','trTable');
   enhanceSearch('rwaSearch','rwaTable');enhanceSearch('stblSearch','stblTable');enhanceSearch('chainSearch','chainTable');
   setupExports();
   try{
     LAST=await fetch('./data/data.json?_='+Date.now()).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();});
   }catch(e){
     const b=el('banner');b.style.display='block';
-    ['e-coins','e-rwa','e-rwahist','e-ac','e-stbl','e-defi'].forEach(id=>el(id).style.display='block');
+    ['e-coins','e-sectors','e-rwa','e-rwahist','e-ac','e-stbl','e-defi'].forEach(id=>el(id).style.display='block');
   }
   applyLang();
 }
