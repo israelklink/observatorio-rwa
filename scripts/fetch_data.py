@@ -16,6 +16,7 @@ import json, urllib.request, datetime, sys, os, bisect
 UA = {"User-Agent": "observatorio-rwa/4.0 (+github-actions)"}
 TIMEOUT = 90
 HIST_POINTS = 180
+RWA_HIST_DAYS = 540       # ~18 meses de eixo diário no gráfico de RWA por categoria
 RWA_HIST_PROTOCOLS = 40   # nº de protocolos RWA cujo histórico é somado por categoria
 
 _TICKERS = None
@@ -38,6 +39,12 @@ def safe(fn, label):
 
 def downsample(series):
     return series[-HIST_POINTS:]
+
+def compress_series(series, daily=365, step=7):
+    """Mantém os últimos `daily` dias em resolução diária e o passado em resolução semanal."""
+    if len(series) <= daily:
+        return series
+    return series[:-daily][::step] + series[-daily:]
 
 
 def tickers():
@@ -233,7 +240,7 @@ def build_rwa_history(subset, cat_order):
     """Soma o TVL histórico dos protocolos por categoria, num eixo diário de ~180 dias."""
     day = 86400
     today = int(datetime.datetime.now(datetime.timezone.utc).timestamp()) // day * day
-    axis = [today - (HIST_POINTS - 1 - i) * day for i in range(HIST_POINTS)]
+    axis = [today - (RWA_HIST_DAYS - 1 - i) * day for i in range(RWA_HIST_DAYS)]
     idx = {c: i for i, c in enumerate(cat_order)}
     vals = [[0.0] * len(cat_order) for _ in axis]
     for p in subset:
@@ -289,7 +296,7 @@ def build_stables():
     if h:
         series = [[int(pt["date"]) * 1000, ((pt.get("totalCirculatingUSD") or {}).get("peggedUSD"))]
                   for pt in h if (pt.get("totalCirculatingUSD") or {}).get("peggedUSD") is not None]
-        history = downsample(series)
+        history = compress_series(series)
     return {"total": total, "count": len(arr), "top": top, "history": history}
 
 
@@ -302,7 +309,7 @@ def build_defi(stables_total):
     history = None
     h = safe(lambda: get("https://api.llama.fi/v2/historicalChainTvl"), "tvl history")
     if h:
-        history = downsample([[int(pt["date"]) * 1000, pt.get("tvl")] for pt in h])
+        history = compress_series([[int(pt["date"]) * 1000, pt.get("tvl")] for pt in h])
     g = safe(build_defi_global, "defi global")
     return {"total_tvl": total, "chains_count": len(chains), "chains": top,
             "stablecoins_total": stables_total, "tvl_history": history, "global": g}
