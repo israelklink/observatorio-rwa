@@ -19,6 +19,7 @@ HIST_POINTS = 180
 RWA_HIST_PROTOCOLS = 40   # nº de protocolos RWA cujo histórico é somado por categoria
 
 _TICKERS = None
+CG_KEY = os.environ.get("COINGECKO_KEY", "").strip()  # chave Demo gratuita do CoinGecko (GitHub Secret)
 
 
 def get(url):
@@ -149,6 +150,42 @@ def classify_rwa(name):
     return "other"
 
 
+# ---- Classes de ativo RWA via categorias do CoinGecko (valor de mercado) ----
+def cg_get(path):
+    url = "https://api.coingecko.com/api/v3" + path
+    if CG_KEY:
+        url += ("&" if "?" in path else "?") + "x_cg_demo_api_key=" + CG_KEY
+    return get(url)
+
+def _cg_class(name, cid):
+    s = (name or "").lower() + " " + (cid or "").lower()
+    if not ("tokeniz" in s or "real world" in s or "rwa" in s):
+        return None
+    for key, kws in [("treasuries", ["treasur"]), ("gold", ["gold"]),
+                     ("stocks", ["stock", "equit"]),
+                     ("real_estate", ["real estate", "real-estate"]),
+                     ("commodities", ["commodit"])]:
+        if any(k in s for k in kws):
+            return key
+    return None
+
+def build_asset_classes():
+    cats = cg_get("/coins/categories")
+    classes = {}
+    umbrella = None
+    for c in cats:
+        cid, name, mc = c.get("id"), c.get("name"), c.get("market_cap")
+        low = (name or "").lower() + " " + (cid or "").lower()
+        if (cid == "real-world-assets-rwa" or "real world assets" in low) and mc:
+            umbrella = mc if (umbrella is None or mc > umbrella) else umbrella
+        k = _cg_class(name, cid)
+        if k and mc and (k not in classes or mc > classes[k]["market_cap"]):
+            classes[k] = {"cat": k, "name": name, "market_cap": mc,
+                          "change_24h": c.get("market_cap_change_24h")}
+    return {"umbrella_mcap": umbrella,
+            "classes": sorted(classes.values(), key=lambda x: x["market_cap"], reverse=True)}
+
+
 def build_rwa_history(subset, cat_order):
     """Soma o TVL histórico dos protocolos por categoria, num eixo diário de ~180 dias."""
     day = 86400
@@ -190,8 +227,9 @@ def build_rwa():
     categories = sorted(cats.values(), key=lambda x: x["tvl"], reverse=True)
     hbc = safe(lambda: build_rwa_history(rwa[:RWA_HIST_PROTOCOLS], [c["cat"] for c in categories]),
                "rwa history_by_cat")
+    ac = safe(build_asset_classes, "asset classes")
     return {"total_tvl": total, "count": len(rwa), "protocols": top,
-            "categories": categories, "history_by_cat": hbc}
+            "categories": categories, "history_by_cat": hbc, "asset_classes": ac}
 
 
 # ---------------- STABLECOINS ----------------
