@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   :root{
     --bg:#13141a; --side:#171822; --panel:#1c1e27; --panel2:#20222c; --line:#2a2c38;
@@ -63,7 +64,16 @@
   .cardhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
   .card h3{margin:0 0 2px;font-size:15px;font-weight:600}
   .card .hint{color:var(--muted);font-size:12px;margin:0}
-  .cc{position:relative;height:340px}
+  .cc{position:relative;height:380px}
+  .cc.tall{height:480px}
+  @media(max-width:820px){.cc.tall{height:340px}}
+  .rangebtns{display:flex;gap:4px;flex-wrap:wrap}
+  .rb{background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-family:var(--mono);font-size:11px;font-weight:500;padding:4px 9px;border-radius:6px;cursor:pointer;line-height:1}
+  .rb:hover{color:var(--ink)}
+  .rb.active{background:var(--soft);border-color:var(--accent);color:var(--accent2)}
+  .tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .exp{background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-family:var(--mono);font-size:11px;font-weight:500;padding:4px 9px;border-radius:6px;cursor:pointer;line-height:1;white-space:nowrap}
+  .exp:hover{color:var(--accent2);border-color:var(--accent)}
   .mt{margin-top:16px}
   .search{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:7px 10px;font-size:13px;font-family:var(--sans);width:170px;outline:none;flex:none}
   .search:focus{border-color:var(--accent)}
@@ -161,7 +171,7 @@
       <h2 class="ptitle" data-i18n="tabStables">Stablecoins</h2>
       <div class="hero"><div><div class="lbl" data-i18n="stblHero">Total stablecoin cap</div><div class="big" id="k-stbl-total">—</div></div></div>
       <div class="strip"><div class="stat"><div class="k" data-i18n="stblCount">Stablecoins tracked</div><div class="v" id="k-stbl-count">—</div></div></div>
-      <div class="card"><div class="cardhead"><div><h3 data-i18n="stblHistT">Stablecoin supply over time</h3></div></div><div class="cc"><canvas id="chStableHist"></canvas></div><div class="empty" id="e-stbl" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
+      <div class="card"><div class="cardhead"><div><h3 data-i18n="stblHistT">Stablecoin supply over time</h3></div><div class="rangebtns"><button class="rb" data-target="chStableHist" data-range="1M">1M</button><button class="rb" data-target="chStableHist" data-range="3M">3M</button><button class="rb" data-target="chStableHist" data-range="6M">6M</button><button class="rb" data-target="chStableHist" data-range="1Y">1Y</button><button class="rb" data-target="chStableHist" data-range="ALL">ALL</button></div></div><div class="cc tall"><canvas id="chStableHist"></canvas></div><div class="empty" id="e-stbl" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
       <div class="card mt"><div class="cardhead"><div><h3 data-i18n="stblTableT">Top stablecoins</h3></div><input class="search" id="stblSearch" data-ph="searchPh" placeholder="Search…"/></div>
         <div style="overflow:auto"><table id="stblTable"><thead><tr><th class="rank">#</th><th data-i18n="thStable">Stablecoin</th><th data-i18n="thPeg">Peg</th><th class="num" data-i18n="thCap">Market cap</th></tr></thead><tbody></tbody></table></div>
       </div>
@@ -175,7 +185,7 @@
         <div class="stat"><div class="k" data-i18n="kStable">Stablecoin cap</div><div class="v" id="k-stable">—</div></div>
         <div class="stat"><div class="k" data-i18n="kChains">Networks tracked</div><div class="v" id="k-chains">—</div></div>
       </div>
-      <div class="card"><div class="cardhead"><div><h3 data-i18n="tvlHistT">DeFi TVL over time</h3></div></div><div class="cc"><canvas id="chTvlHist"></canvas></div></div>
+      <div class="card"><div class="cardhead"><div><h3 data-i18n="tvlHistT">DeFi TVL over time</h3></div><div class="rangebtns"><button class="rb" data-target="chTvlHist" data-range="1M">1M</button><button class="rb" data-target="chTvlHist" data-range="3M">3M</button><button class="rb" data-target="chTvlHist" data-range="6M">6M</button><button class="rb" data-target="chTvlHist" data-range="1Y">1Y</button><button class="rb" data-target="chTvlHist" data-range="ALL">ALL</button></div></div><div class="cc tall"><canvas id="chTvlHist"></canvas></div></div>
       <div class="card mt"><div class="cardhead"><div><h3 data-i18n="defiC1T">Top 15 networks by TVL</h3></div></div><div class="cc" style="height:460px"><canvas id="chChains"></canvas></div><div class="empty" id="e-defi" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
       <div class="card mt"><div class="cardhead"><div><h3 data-i18n="defiC2T">Network ranking</h3></div><input class="search" id="chainSearch" data-ph="searchPh" placeholder="Search…"/></div>
         <div style="overflow:auto"><table id="chainTable"><thead><tr><th class="rank">#</th><th data-i18n="thNetwork">Network</th><th class="num">TVL</th></tr></thead><tbody></tbody></table></div>
@@ -195,7 +205,7 @@ const DICT={
     rwaC1T:"Top RWA protocols by TVL",rwaC2T:"Detailed ranking",rwaC2H:"TVL, networks and 24h change.",thProto:"Protocol",thNetworks:"Networks",thNetwork:"Network",
     stblHero:"Total stablecoin cap",stblCount:"Stablecoins tracked",stblHistT:"Stablecoin supply over time",stblTableT:"Top stablecoins",thStable:"Stablecoin",thPeg:"Peg",thCap:"Market cap",
     kTvl:"Total DeFi TVL",kStable:"Stablecoin cap",kChains:"Networks tracked",tvlHistT:"DeFi TVL over time",defiC1T:"Top 15 networks by TVL",defiC2T:"Network ranking",
-    await:"Awaiting the first data collection.",devBy:"Developed by",searchPh:"Search…",
+    await:"Awaiting the first data collection.",devBy:"Developed by",searchPh:"Search…",exportImg:"Save as PNG",exportCsv:"Export CSV",
     catTreasuries:"Treasuries",catPrivate_credit:"Private credit",catReal_estate:"Real estate",catCommodities:"Commodities",catEquities:"Equities",catOther:"Other",
     lblMcap:"Market cap (US$)",lblTvl:"TVL (US$)",lblSupply:"Supply (US$)",
     banner:'No data collected yet. Run the <b>"Atualizar dados"</b> workflow under the GitHub Actions tab (or run <code>python scripts/fetch_data.py</code>) to generate <code>data/data.json</code>.'},
@@ -208,7 +218,7 @@ const DICT={
     rwaC1T:"Top protocolos RWA por TVL",rwaC2T:"Ranking detalhado",rwaC2H:"TVL, redes e variação em 24h.",thProto:"Protocolo",thNetworks:"Redes",thNetwork:"Rede",
     stblHero:"Cap. total de stablecoins",stblCount:"Stablecoins monitoradas",stblHistT:"Evolução da oferta de stablecoins",stblTableT:"Maiores stablecoins",thStable:"Stablecoin",thPeg:"Lastro",thCap:"Cap. mercado",
     kTvl:"TVL total em DeFi",kStable:"Cap. de stablecoins",kChains:"Redes monitoradas",tvlHistT:"Evolução do TVL em DeFi",defiC1T:"Top 15 redes por TVL",defiC2T:"Ranking de redes",
-    await:"Aguardando a primeira coleta de dados.",devBy:"Desenvolvido por",searchPh:"Buscar…",
+    await:"Aguardando a primeira coleta de dados.",devBy:"Desenvolvido por",searchPh:"Buscar…",exportImg:"Salvar como PNG",exportCsv:"Exportar CSV",
     catTreasuries:"Tesouraria",catPrivate_credit:"Crédito privado",catReal_estate:"Imóveis",catCommodities:"Commodities",catEquities:"Ações",catOther:"Outros",
     lblMcap:"Cap. de mercado (US$)",lblTvl:"TVL (US$)",lblSupply:"Oferta (US$)",
     banner:'Ainda não há dados coletados. Execute o workflow <b>"Atualizar dados"</b> na aba Actions do GitHub (ou rode <code>python scripts/fetch_data.py</code>) para gerar <code>data/data.json</code>.'}
@@ -228,6 +238,7 @@ const pegLabel=(p)=>({peggedUSD:'USD',peggedEUR:'EUR',peggedBRL:'BRL',peggedGBP:
 const ACCENT='#a685f2';
 const DOUGH=['#a685f2','#c4b0f7','#7c5cd6','#8b8ea3','#cbb8f9','#6f5bb0','#b9a0f0','#55597a','#d8c9fb','#9a86c8'];
 Chart.defaults.color='#9698ab';Chart.defaults.font.family="'JetBrains Mono',ui-monospace,monospace";Chart.defaults.borderColor='rgba(255,255,255,.05)';
+Chart.register({id:'brandmark',afterDraw:function(chart){var ctx=chart.ctx;if(!ctx)return;ctx.save();ctx.font="600 12px 'Inter',system-ui,sans-serif";ctx.fillStyle='rgba(166,133,242,.30)';ctx.textAlign='right';ctx.textBaseline='bottom';ctx.fillText('RWA Observatory',chart.width-10,chart.height-8);ctx.restore();}});
 
 let LAST=null, CHARTS=[];
 const clearCharts=()=>{CHARTS.forEach(c=>{try{c.destroy()}catch(e){}});CHARTS=[];};
@@ -241,6 +252,34 @@ const lineChart=(id,series,label)=>{if(!series||!series.length)return;
     borderColor:ACCENT,backgroundColor:'rgba(166,133,242,.15)',fill:true,pointRadius:0,borderWidth:2,tension:.25}]},
     options:{plugins:{legend:{display:false}},interaction:{intersect:false,mode:'index'},
     scales:{x:{grid:{display:false},ticks:{maxTicksLimit:7,autoSkip:true}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{callback:v=>fmtUSD(v)}}}}});CHARTS.push(c);};
+
+const RANGES={'1M':30,'3M':90,'6M':180,'1Y':365,'ALL':null};
+const histState={};
+function sliceRange(series,days){
+  if(!days)return series;
+  const cutoff=Date.now()-days*86400000;
+  const out=series.filter(p=>p[0]>=cutoff);
+  return out.length>1?out:series;
+}
+function drawHist(id){
+  const st=histState[id];if(!st)return;
+  if(st.chart){try{st.chart.destroy()}catch(e){}}
+  const series=sliceRange(st.series,RANGES[st.range]);
+  const labels=series.map(p=>{const d=new Date(p[0]);return (d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2);});
+  st.chart=new Chart(el(id),{type:'line',data:{labels,datasets:[{label:st.label,data:series.map(p=>p[1]),
+    borderColor:ACCENT,backgroundColor:'rgba(166,133,242,.15)',fill:true,pointRadius:0,borderWidth:2,tension:.25}]},
+    options:{plugins:{legend:{display:false}},interaction:{intersect:false,mode:'index'},
+    scales:{x:{grid:{display:false},ticks:{maxTicksLimit:8,autoSkip:true}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{callback:v=>fmtUSD(v)}}}}});CHARTS.push(st.chart);
+  document.querySelectorAll('.rb[data-target="'+id+'"]').forEach(b=>b.classList.toggle('active',b.dataset.range===st.range));
+}
+function histChart(id,series,label){
+  if(!series||!series.length)return;
+  const prev=histState[id]&&histState[id].range;
+  histState[id]={series:series,label:label,range:prev||'6M'};
+  drawHist(id);
+}
+document.addEventListener('click',function(ev){var b=ev.target.closest('.rb');if(!b)return;
+  var id=b.dataset.target,st=histState[id];if(!st)return;st.range=b.dataset.range;drawHist(id);});
 
 el('tabs').addEventListener('click',(ev)=>{const b=ev.target.closest('.navi');if(!b)return;
   document.querySelectorAll('.navi').forEach(t=>t.classList.remove('active'));
@@ -292,7 +331,7 @@ function renderStables(s){
   if(!s)return;
   el('k-stbl-total').textContent=fmtUSD(s.total);
   el('k-stbl-count').textContent=s.count!=null?s.count:'—';
-  if(s.history&&s.history.length){el('e-stbl').style.display='none';lineChart('chStableHist',s.history,t('lblSupply'));}
+  if(s.history&&s.history.length){el('e-stbl').style.display='none';histChart('chStableHist',s.history,t('lblSupply'));}
   else el('e-stbl').style.display='block';
   const top=(s.top||[]);
   el('stblTable').tBodies[0].innerHTML=top.map((a,i)=>`<tr><td class="rank">${i+1}</td>
@@ -304,7 +343,7 @@ function renderDefi(d){
   el('k-tvl').textContent=fmtUSD(d.total_tvl);
   el('k-stable').textContent=fmtUSD(d.stablecoins_total);
   el('k-chains').textContent=d.chains_count!=null?d.chains_count.toLocaleString(loc()):'—';
-  if(d.tvl_history&&d.tvl_history.length)lineChart('chTvlHist',d.tvl_history,t('lblTvl'));
+  if(d.tvl_history&&d.tvl_history.length)histChart('chTvlHist',d.tvl_history,t('lblTvl'));
   const cs=(d.chains||[]);
   if(cs.length){el('e-defi').style.display='none';barY('chChains',cs.map(c=>c.name),cs.map(c=>c.tvl),t('lblTvl'));}
   else el('e-defi').style.display='block';
@@ -341,6 +380,7 @@ function applyLang(){
   document.documentElement.lang=LANG==='pt'?'pt-BR':'en';
   document.querySelectorAll('[data-i18n]').forEach(e=>{e.textContent=t(e.dataset.i18n);});
   document.querySelectorAll('[data-ph]').forEach(e=>{e.placeholder=t(e.dataset.ph);});
+  document.querySelectorAll('.exp').forEach(e=>{e.title=t(e.dataset.fmt==='csv'?'exportCsv':'exportImg');});
   document.querySelectorAll('.lang button').forEach(b=>b.classList.toggle('active',b.dataset.lang===LANG));
   const b=el('banner');if(b.style.display==='block')b.innerHTML=t('banner');
   renderAll();
@@ -348,10 +388,69 @@ function applyLang(){
 el('lang').addEventListener('click',(ev)=>{const b=ev.target.closest('button');if(!b)return;
   LANG=b.dataset.lang;localStorage.setItem('obs_lang',LANG);applyLang();});
 
+function downloadURL(url,filename){var a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();}
+function downloadText(text,filename){var blob=new Blob(['\ufeff'+text],{type:'text/csv;charset=utf-8'});var url=URL.createObjectURL(blob);downloadURL(url,filename);setTimeout(function(){URL.revokeObjectURL(url);},1500);}
+function panelBg(){return (getComputedStyle(document.documentElement).getPropertyValue('--panel').trim())||'#1c1e27';}
+function csvEsc(s){s=String(s==null?'':s);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}
+function tableToCSV(table){if(!table)return '';var rows=[];
+  if(table.tHead&&table.tHead.rows.length){rows.push([].map.call(table.tHead.rows[0].cells,function(c){return csvEsc(c.textContent.trim());}).join(','));}
+  [].forEach.call(table.tBodies[0].rows,function(r){if(r.cells.length<2)return;
+    rows.push([].map.call(r.cells,function(td){var v=td.dataset&&td.dataset.v;return csvEsc((v!==undefined&&v!=='')?v:td.textContent.trim());}).join(','));});
+  return rows.join('\n');}
+function chartToCSV(id){var st=histState[id];
+  if(st&&st.series){var rng=sliceRange(st.series,RANGES[st.range]);return 'date,value\n'+rng.map(function(p){return new Date(p[0]).toISOString().slice(0,10)+','+p[1];}).join('\n');}
+  var ch=(window.Chart&&Chart.getChart)?Chart.getChart(id):null;if(!ch)return '';
+  var labels=ch.data.labels||[],ds=ch.data.datasets||[];
+  var lines=[['label'].concat(ds.map(function(d,i){return csvEsc(d.label||('value'+(i+1)));})).join(',')];
+  labels.forEach(function(lb,i){lines.push([csvEsc(lb)].concat(ds.map(function(d){return csvEsc(d.data[i]);})).join(','));});
+  return lines.join('\n');}
+function setupExports(){
+  document.querySelectorAll('.card').forEach(function(card){
+    var head=card.querySelector('.cardhead');if(!head)return;
+    var canvas=card.querySelector('canvas'),table=card.querySelector('table');
+    if(!canvas&&!table)return;
+    if(head.querySelector('.exp'))return;
+    var tools=head.querySelector('.tools');
+    if(!tools){tools=document.createElement('div');tools.className='tools';
+      Array.prototype.slice.call(head.children).forEach(function(k,i){if(i>0)tools.appendChild(k);});
+      head.appendChild(tools);}
+    var h3=card.querySelector('h3');
+    var nm=(((h3?h3.textContent:'export').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''))||'export');
+    var type=canvas?'chart':'table';
+    [['csv','&#8681; CSV','exportCsv'],['png','&#8681; PNG','exportImg']].forEach(function(spec){
+      var btn=document.createElement('button');btn.type='button';btn.className='exp';btn.innerHTML=spec[1];
+      btn.dataset.fmt=spec[0];btn.dataset.type=type;btn.dataset.name=nm;btn.title=t(spec[2]);
+      if(canvas)btn.dataset.id=canvas.id;
+      tools.appendChild(btn);
+    });
+  });
+}
+document.addEventListener('click',function(ev){
+  var b=ev.target.closest('.exp');if(!b)return;
+  var name=b.dataset.name||'export',fmt=b.dataset.fmt,type=b.dataset.type;
+  if(fmt==='csv'){
+    var csv=type==='chart'?chartToCSV(b.dataset.id):tableToCSV(b.closest('.card').querySelector('table'));
+    if(csv)downloadText(csv,name+'.csv');
+    return;
+  }
+  if(type==='chart'){
+    var ch=(window.Chart&&Chart.getChart)?Chart.getChart(b.dataset.id):null;
+    var src=ch?ch.canvas:el(b.dataset.id);if(!src)return;
+    var out=document.createElement('canvas');out.width=src.width;out.height=src.height;
+    var ctx=out.getContext('2d');ctx.fillStyle=panelBg();ctx.fillRect(0,0,out.width,out.height);ctx.drawImage(src,0,0);
+    downloadURL(out.toDataURL('image/png'),name+'.png');
+  }else{
+    if(typeof html2canvas==='undefined'){return;}
+    var card=b.closest('.card');
+    html2canvas(card,{backgroundColor:panelBg(),scale:2,ignoreElements:function(e){return e.classList&&e.classList.contains('tools');}}).then(function(cv){downloadURL(cv.toDataURL('image/png'),name+'.png');});
+  }
+});
+
 async function init(){
   ['coinTable','rwaTable','stblTable','chainTable'].forEach(enhanceTable);
   enhanceSearch('coinSearch','coinTable');enhanceSearch('rwaSearch','rwaTable');
   enhanceSearch('stblSearch','stblTable');enhanceSearch('chainSearch','chainTable');
+  setupExports();
   try{
     LAST=await fetch('./data/data.json?_='+Date.now()).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();});
   }catch(e){
