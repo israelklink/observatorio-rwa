@@ -135,7 +135,7 @@
       <button class="navi" data-tab="rwa"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span data-i18n="tabRwa">Tokenized RWA</span></button>
       <button class="navi" data-tab="stables"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.2h4a1.8 1.8 0 010 3.6h-3a1.8 1.8 0 000 3.6h4"/></svg><span data-i18n="tabStables">Stablecoins</span></button>
       <button class="navi" data-tab="defi"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.6 7.4L11 15.4M16.4 7.4L13 15.4M8 6h8"/></svg><span data-i18n="tabDefi">DeFi by Network</span></button>
-      <button class="navi green" data-tab="green"><svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 014 13c0-5 4-9 12-9 0 6-2 12-5 16z"/><path d="M11 20c-1-4 1-8 5-11"/></svg><span data-i18n="tabGreen">Green assets</span></button>
+      <button class="navi" data-tab="green"><svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 014 13c0-5 4-9 12-9 0 6-2 12-5 16z"/><path d="M11 20c-1-4 1-8 5-11"/></svg><span data-i18n="tabGreen">Green assets</span></button>
     </nav>
     <div class="side-foot">
       <div class="lang" id="lang"><button data-lang="en">EN</button><button data-lang="pt">PT</button></div>
@@ -187,8 +187,7 @@
       <p class="hint" style="margin:-8px 0 16px;max-width:70ch" data-i18n="greenH">Low-energy (Proof-of-Stake), ReFi and carbon-focused assets. Curated list, live prices.</p>
       <div class="hero"><div><div class="lbl" data-i18n="greenHero">Combined market cap</div><div class="big" id="k-green-mcap">—</div></div></div>
       <div class="strip"><div class="stat"><div class="k" data-i18n="greenCount">Assets tracked</div><div class="v" id="k-green-n">—</div></div></div>
-      <div class="card"><div class="cardhead"><div><h3 data-i18n="greenChartT">Top green assets by market cap</h3></div></div><div class="cc tall"><canvas id="chGreen"></canvas></div><div class="empty" id="e-green" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
-      <div class="card mt"><div class="cardhead"><div><h3 data-i18n="greenTableT">Sustainable assets</h3></div><input class="search" id="greenSearch" data-ph="searchPh" placeholder="Search…"/></div>
+      <div class="card"><div class="cardhead"><div><h3 data-i18n="greenTableT">Sustainable assets</h3></div><input class="search" id="greenSearch" data-ph="searchPh" placeholder="Search…"/></div>
         <div style="overflow:auto"><table id="greenTable"><thead><tr><th class="rank">#</th><th data-i18n="thCoin">Asset</th><th data-i18n="thReason">Why green</th><th data-i18n="thConsensus">Consensus</th><th class="num" data-i18n="thPrice">Price</th><th class="num" data-i18n="thMcap">Market cap</th><th class="num">24h</th><th class="num">7d</th><th class="num" data-i18n="thVol">24h vol</th></tr></thead><tbody></tbody></table></div>
       </div>
     </section>
@@ -298,6 +297,18 @@ const gridX={grid:{color:'rgba(255,255,255,.05)'},ticks:{callback:v=>fmtUSD(v)}}
 const barY=(id,labels,data,label,color)=>{const c=new Chart(el(id),{type:'bar',
   data:{labels,datasets:[{label,data,backgroundColor:color||ACCENT,borderRadius:4,borderSkipped:false}]},
   options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:gridX,y:{grid:{display:false}}}}});CHARTS.push(c);};
+/* treemapChart = mapa de blocos: tamanho = capitalização, cor = variação 24h (verde sobe / vermelho cai) */
+const treemapChart=(id,items)=>{
+  if(!items||!items.length)return false;
+  const c=new Chart(el(id),{type:'treemap',
+    data:{datasets:[{tree:items,key:'market_cap',spacing:1.5,borderWidth:1.5,borderColor:'#13141a',borderRadius:4,
+      backgroundColor:function(ctx){if(ctx.type!=='data')return 'transparent';var o=ctx.raw._data||{};var ch=o.change_24h||0;var m=Math.min(Math.abs(ch)/8,1);return ch>=0?'rgba(63,185,80,'+(0.35+0.5*m)+')':'rgba(248,81,73,'+(0.35+0.5*m)+')';},
+      labels:{display:true,align:'left',position:'top',color:'#f2fff2',font:{family:"'Inter',system-ui,sans-serif",weight:'600',size:13},padding:5,
+        formatter:function(ctx){var o=ctx.raw._data||{};return o.symbol||'';}}}]},
+    options:{maintainAspectRatio:false,plugins:{legend:{display:false},brandmark:false,
+      tooltip:{callbacks:{title:function(it){var o=it[0].raw._data||{};return (o.name||'')+' ('+(o.symbol||'')+')';},
+        label:function(it){var o=it.raw._data||{};return fmtUSD(o.market_cap)+'  ·  '+fmtPct(o.change_24h);}}}}}});
+  CHARTS.push(c);return true;};
 const RANGES={'1M':30,'3M':90,'6M':180,'1Y':365,'ALL':null};
 const histState={};
 function sliceRange(series,days){if(!days)return series;const cutoff=Date.now()-days*86400000;const out=series.filter(p=>p[0]>=cutoff);return out.length>1?out:series;}
@@ -372,8 +383,6 @@ function renderGreen(g){
   el('k-green-mcap').textContent=fmtUSD(g.total_mcap);
   el('k-green-n').textContent=g.count!=null?g.count:'—';
   const a=(g.assets||[]);
-  if(a.length){el('e-green').style.display='none';barY('chGreen',a.slice(0,12).map(x=>x.symbol),a.slice(0,12).map(x=>x.market_cap),t('lblMcap'),'#3fb950');}
-  else el('e-green').style.display='block';
   el('greenTable').tBodies[0].innerHTML=a.map((c,i)=>{const ch=c.change_24h;const cls=ch==null?'':(ch>=0?'up':'down');const c7=c.change_7d;const cls7=c7==null?'':(c7>=0?'up':'down');
     return `<tr><td class="rank">${i+1}</td><td><span class="nm">${c.name||''}</span><span class="sym">${(c.symbol||'').toUpperCase()}</span></td>
       <td><span class="tag g">${t('reason_'+c.reason)}</span></td>
@@ -528,7 +537,7 @@ async function init(){
     LAST=await fetch('./data/data.json?_='+Date.now()).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();});
   }catch(e){
     const b=el('banner');b.style.display='block';
-    ['e-coins','e-green','e-rwa','e-rwahist','e-stbl','e-defi'].forEach(id=>el(id).style.display='block');
+    ['e-coins','e-rwa','e-rwahist','e-stbl','e-defi'].forEach(id=>el(id).style.display='block');
   }
   applyLang();
 }
