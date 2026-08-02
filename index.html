@@ -5,7 +5,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>RWA & Crypto Observatory</title>
-<meta name="description" content="Data panel for the crypto market, DeFi by blockchain, stablecoins and tokenized real-world assets (RWA)."/>
+<meta name="description" content="Data panel for the crypto market, DeFi by blockchain, stablecoins, sustainable assets and tokenized real-world assets (RWA)."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet"/>
@@ -44,7 +44,6 @@
   .dev a{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;font-weight:500}
   .dev a:hover{color:var(--accent2)}
   .dev svg{width:15px;height:15px;fill:currentColor}
-
   /* ----- Área principal de conteúdo (onde aparecem os cards, gráficos e tabelas de cada aba) ----- */
   .main{flex:1;min-width:0;padding:28px 34px 48px}
   .updated{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;margin-bottom:14px}
@@ -94,6 +93,7 @@
   .rank{color:var(--muted);font-family:var(--mono);width:32px}
   .nm{font-weight:600}.sym{color:var(--muted);font-weight:500;font-size:12px;margin-left:6px}
   .tag{font-family:var(--mono);font-size:10px;color:var(--accent2);background:var(--soft);padding:2px 7px;border-radius:5px}
+  .tag.g{color:#8ff0a4;background:rgba(63,185,80,.14)}
   .catdot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:7px;vertical-align:middle}
   .empty{color:var(--muted);font-size:14px;padding:14px 0}
   .movers{display:grid;grid-template-columns:1fr 1fr;gap:26px}
@@ -102,6 +102,14 @@
   .mv-row:last-child{border-bottom:0}
   .mv-row .s{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:6px}
   .mv-row .p{font-family:var(--mono)}
+  /* ----- Medidor de Medo & Ganância (barra colorida + marcador + mini-histórico) ----- */
+  .gauge-wrap{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+  .gauge-num{font-family:var(--mono);font-size:46px;font-weight:600;line-height:1}
+  .gauge-cls{font-size:14px;font-weight:600;margin-top:4px}
+  .gbar-box{flex:1;min-width:240px}
+  .gbar{position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,#f85149,#f0883e,#d29922,#7ee787,#3fb950)}
+  .gmark{position:absolute;top:-5px;width:3px;height:22px;background:#fff;border-radius:2px;transform:translateX(-50%);box-shadow:0 0 0 2px rgba(0,0,0,.35)}
+  .gscale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:7px}
   .banner{margin:0 0 18px;padding:11px 14px;border-left:3px solid var(--accent);background:var(--soft);color:var(--ink);font-size:14px;display:none}
   .banner code{font-family:var(--mono);font-size:12px;color:var(--accent2)}
   /* ----- Responsivo: em telas estreitas (celular) o menu vira topo e o conteúdo se empilha ----- */
@@ -115,12 +123,13 @@
 </style>
 </head>
 <body>
-<!-- ===== ESTRUTURA: barra lateral (aside) + conteúdo principal (main) com 4 abas ===== -->
+<!-- ===== ESTRUTURA: barra lateral (aside) + conteúdo principal (main) com as abas ===== -->
 <div class="layout">
   <aside class="sidebar">
     <div class="brand"><div class="mark">◆</div><div><b>Observatory</b><small>RWA · Crypto</small></div></div>
     <nav class="nav" id="tabs">
       <button class="navi active" data-tab="macro"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><span data-i18n="tabMacro">Macro Overview</span></button>
+      <button class="navi" data-tab="green"><svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 014 13c0-5 4-9 12-9 0 6-2 12-5 16z"/><path d="M11 20c-1-4 1-8 5-11"/></svg><span data-i18n="tabGreen">Green assets</span></button>
       <button class="navi" data-tab="rwa"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span data-i18n="tabRwa">Tokenized RWA</span></button>
       <button class="navi" data-tab="stables"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.2h4a1.8 1.8 0 010 3.6h-3a1.8 1.8 0 000 3.6h4"/></svg><span data-i18n="tabStables">Stablecoins</span></button>
       <button class="navi" data-tab="defi"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.6 7.4L11 15.4M16.4 7.4L13 15.4M8 6h8"/></svg><span data-i18n="tabDefi">DeFi by Network</span></button>
@@ -135,12 +144,10 @@
       </div>
     </div>
   </aside>
-
   <!-- Conteúdo principal: cada <section class="page"> é uma aba; só a que tem a classe "active" fica visível -->
   <main class="main">
     <div class="updated"><span data-i18n="updatedLabel">Data last updated:</span> <b id="updated">—</b></div>
     <div class="banner" id="banner"></div>
-
     <!-- MACRO -->
     <section class="page active" id="page-macro">
       <h2 class="ptitle" data-i18n="tabMacro">Macro Overview</h2>
@@ -151,7 +158,16 @@
         <div class="stat"><div class="k" data-i18n="kEth">ETH dominance</div><div class="v" id="k-eth">—</div></div>
         <div class="stat"><div class="k" data-i18n="kAssets">Crypto assets</div><div class="v" id="k-assets">—</div></div>
       </div>
-      <div class="grid g2">
+      <!-- Índice de Medo & Ganância -->
+      <div class="card" id="fngCard" style="display:none"><div class="cardhead"><div><h3 data-i18n="fngT">Fear &amp; Greed Index</h3><p class="hint" data-i18n="fngH">Market sentiment, 0 (extreme fear) to 100 (extreme greed).</p></div></div>
+        <div class="gauge-wrap">
+          <div><div class="gauge-num" id="fng-val">—</div><div class="gauge-cls" id="fng-cls"></div></div>
+          <div class="gbar-box"><div class="gbar"><div class="gmark" id="fng-mark" style="left:50%"></div></div>
+            <div class="gscale"><span>0</span><span data-i18n="fngLow">Fear</span><span>50</span><span data-i18n="fngHigh">Greed</span><span>100</span></div></div>
+          <div class="cc" style="height:80px;width:220px;flex:none"><canvas id="chFng"></canvas></div>
+        </div>
+      </div>
+      <div class="grid g2 mt">
         <div class="card"><div class="cardhead"><div><h3 data-i18n="macroC1T">Top 10 assets by market cap</h3></div></div><div class="cc"><canvas id="chTopCoins"></canvas></div><div class="empty" id="e-coins" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
         <div class="card"><div class="cardhead"><div><h3 data-i18n="macroC2T">Market dominance</h3></div></div><div class="cc"><canvas id="chDominance"></canvas></div></div>
       </div>
@@ -162,7 +178,17 @@
         <div style="overflow:auto"><table id="coinTable"><thead><tr><th class="rank">#</th><th data-i18n="thCoin">Asset</th><th class="num" data-i18n="thPrice">Price</th><th class="num" data-i18n="thMcap">Market cap</th><th class="num">24h</th></tr></thead><tbody></tbody></table></div>
       </div>
     </section>
-
+    <!-- GREEN -->
+    <section class="page" id="page-green">
+      <h2 class="ptitle" data-i18n="tabGreen">Green assets</h2>
+      <p class="hint" style="margin:-8px 0 16px;max-width:70ch" data-i18n="greenH">Low-energy (Proof-of-Stake), ReFi and carbon-focused assets. Curated list, live prices.</p>
+      <div class="hero"><div><div class="lbl" data-i18n="greenHero">Combined market cap</div><div class="big" id="k-green-mcap">—</div></div></div>
+      <div class="strip"><div class="stat"><div class="k" data-i18n="greenCount">Assets tracked</div><div class="v" id="k-green-n">—</div></div></div>
+      <div class="card"><div class="cardhead"><div><h3 data-i18n="greenChartT">Top green assets by market cap</h3></div></div><div class="cc tall"><canvas id="chGreen"></canvas></div><div class="empty" id="e-green" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
+      <div class="card mt"><div class="cardhead"><div><h3 data-i18n="greenTableT">Sustainable assets</h3></div><input class="search" id="greenSearch" data-ph="searchPh" placeholder="Search…"/></div>
+        <div style="overflow:auto"><table id="greenTable"><thead><tr><th class="rank">#</th><th data-i18n="thCoin">Asset</th><th data-i18n="thReason">Why green</th><th class="num" data-i18n="thPrice">Price</th><th class="num" data-i18n="thMcap">Market cap</th><th class="num">24h</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </section>
     <!-- RWA -->
     <section class="page" id="page-rwa">
       <h2 class="ptitle" data-i18n="tabRwa">Tokenized RWA</h2>
@@ -177,7 +203,6 @@
         <div style="overflow:auto"><table id="rwaTable"><thead><tr><th class="rank">#</th><th data-i18n="thProto">Protocol</th><th data-i18n="thCat">Category</th><th data-i18n="thNetworks">Networks</th><th class="num">TVL</th><th class="num">24h</th></tr></thead><tbody></tbody></table></div>
       </div>
     </section>
-
     <!-- STABLECOINS -->
     <section class="page" id="page-stables">
       <h2 class="ptitle" data-i18n="tabStables">Stablecoins</h2>
@@ -188,7 +213,6 @@
         <div style="overflow:auto"><table id="stblTable"><thead><tr><th class="rank">#</th><th data-i18n="thStable">Stablecoin</th><th data-i18n="thPeg">Peg</th><th class="num" data-i18n="thCap">Market cap</th></tr></thead><tbody></tbody></table></div>
       </div>
     </section>
-
     <!-- DEFI -->
     <section class="page" id="page-defi">
       <h2 class="ptitle" data-i18n="tabDefi">DeFi by Network</h2>
@@ -205,16 +229,19 @@
     </section>
   </main>
 </div>
-
 <script>
 /* ===================== TEXTOS (bilíngue EN/PT) ===================== */
-/* DICT guarda todas as frases nos dois idiomas; a função t() abaixo escolhe conforme o idioma atual. */
 const DICT={
-  en:{updatedLabel:"Data last updated:",tabMacro:"Macro Overview",tabRwa:"Tokenized RWA",tabStables:"Stablecoins",tabDefi:"DeFi by Network",
+  en:{updatedLabel:"Data last updated:",tabMacro:"Macro Overview",tabGreen:"Green assets",tabRwa:"Tokenized RWA",tabStables:"Stablecoins",tabDefi:"DeFi by Network",
     kMcap:"Total market cap",kVol:"24h volume",kBtc:"BTC dominance",kEth:"ETH dominance",kAssets:"Crypto assets",
     macroC1T:"Top 10 assets by market cap",macroC2T:"Market dominance",
     moversT:"24h movers",moversH:"Biggest gainers and losers among the top 50.",gainers:"Top gainers",losers:"Top losers",
     coinsT:"Assets",coinsH:"Price, market cap and 24h change.",thCoin:"Asset",thPrice:"Price",thMcap:"Market cap",
+    fngT:"Fear & Greed Index",fngH:"Market sentiment, 0 (extreme fear) to 100 (extreme greed).",fngLow:"Fear",fngHigh:"Greed",
+    fngExtFear:"Extreme fear",fngFear:"Fear",fngNeutral:"Neutral",fngGreed:"Greed",fngExtGreed:"Extreme greed",
+    greenH:"Low-energy (Proof-of-Stake), ReFi and carbon-focused assets. Curated list, live prices.",
+    greenHero:"Combined market cap",greenCount:"Assets tracked",greenChartT:"Top green assets by market cap",greenTableT:"Sustainable assets",thReason:"Why green",
+    reason_pos:"Proof-of-Stake",reason_low_energy:"Low energy",reason_carbon_negative:"Carbon negative",reason_carbon_neutral:"Carbon neutral",reason_efficient_pos:"Efficient PoS",reason_refi:"ReFi",reason_feeless:"Feeless",reason_eco_farming:"Eco farming",reason_carbon:"Carbon market",reason_energy:"Energy sector",
     kRwaTvl:"Total RWA TVL",kRwaN:"RWA protocols",rwaCatT:"RWA by category",rwaCatH:"Approximate split by asset type (curated).",
     rwaC1T:"Top RWA protocols by TVL",rwaHistT:"RWA growth by category (DeFi TVL)",rwaC2T:"Detailed ranking",rwaC2H:"TVL, networks and 24h change.",thProto:"Protocol",thNetworks:"Networks",thNetwork:"Network",thCat:"Category",
     stblHero:"Total stablecoin cap",stblCount:"Stablecoins tracked",stblHistT:"Stablecoin supply over time",stblTableT:"Top stablecoins",thStable:"Stablecoin",thPeg:"Peg",thCap:"Market cap",
@@ -223,11 +250,16 @@ const DICT={
     catTreasuries:"Treasuries",catPrivate_credit:"Private credit",catReal_estate:"Real estate",catCommodities:"Commodities",catEquities:"Equities",catOther:"Other",
     lblMcap:"Market cap (US$)",lblTvl:"TVL (US$)",lblSupply:"Supply (US$)",
     banner:'No data collected yet. Run the <b>"Atualizar dados"</b> workflow under the GitHub Actions tab (or run <code>python scripts/fetch_data.py</code>) to generate <code>data/data.json</code>.'},
-  pt:{updatedLabel:"Última atualização dos dados:",tabMacro:"Panorama Macro",tabRwa:"RWA Tokenizados",tabStables:"Stablecoins",tabDefi:"DeFi por Rede",
+  pt:{updatedLabel:"Última atualização dos dados:",tabMacro:"Panorama Macro",tabGreen:"Criptoativos verdes",tabRwa:"RWA Tokenizados",tabStables:"Stablecoins",tabDefi:"DeFi por Rede",
     kMcap:"Cap. de mercado total",kVol:"Volume 24h",kBtc:"Dominância BTC",kEth:"Dominância ETH",kAssets:"Criptoativos",
     macroC1T:"Top 10 ativos por capitalização",macroC2T:"Dominância de mercado",
     moversT:"Maiores variações (24h)",moversH:"Maiores altas e baixas entre as 50 maiores.",gainers:"Maiores altas",losers:"Maiores baixas",
     coinsT:"Ativos",coinsH:"Preço, capitalização e variação em 24h.",thCoin:"Ativo",thPrice:"Preço",thMcap:"Cap. mercado",
+    fngT:"Índice de Medo & Ganância",fngH:"Sentimento do mercado, 0 (medo extremo) a 100 (ganância extrema).",fngLow:"Medo",fngHigh:"Ganância",
+    fngExtFear:"Medo extremo",fngFear:"Medo",fngNeutral:"Neutro",fngGreed:"Ganância",fngExtGreed:"Ganância extrema",
+    greenH:"Ativos de baixo consumo (Proof-of-Stake), ReFi e foco em carbono. Lista curada, preços ao vivo.",
+    greenHero:"Cap. de mercado combinada",greenCount:"Ativos monitorados",greenChartT:"Maiores ativos verdes por capitalização",greenTableT:"Ativos sustentáveis",thReason:"Por que é verde",
+    reason_pos:"Proof-of-Stake",reason_low_energy:"Baixo consumo",reason_carbon_negative:"Carbono negativo",reason_carbon_neutral:"Carbono neutro",reason_efficient_pos:"PoS eficiente",reason_refi:"ReFi",reason_feeless:"Sem taxas",reason_eco_farming:"Cultivo ecológico",reason_carbon:"Mercado de carbono",reason_energy:"Setor de energia",
     kRwaTvl:"TVL total em RWA",kRwaN:"Protocolos RWA",rwaCatT:"RWA por categoria",rwaCatH:"Divisão aproximada por tipo de ativo (curada).",
     rwaC1T:"Top protocolos RWA por TVL",rwaHistT:"Evolução do RWA por categoria (TVL em DeFi)",rwaC2T:"Ranking detalhado",rwaC2H:"TVL, redes e variação em 24h.",thProto:"Protocolo",thNetworks:"Redes",thNetwork:"Rede",thCat:"Categoria",
     stblHero:"Cap. total de stablecoins",stblCount:"Stablecoins monitoradas",stblHistT:"Evolução da oferta de stablecoins",stblTableT:"Maiores stablecoins",thStable:"Stablecoin",thPeg:"Lastro",thCap:"Cap. mercado",
@@ -237,60 +269,35 @@ const DICT={
     lblMcap:"Cap. de mercado (US$)",lblTvl:"TVL (US$)",lblSupply:"Oferta (US$)",
     banner:'Ainda não há dados coletados. Execute o workflow <b>"Atualizar dados"</b> na aba Actions do GitHub (ou rode <code>python scripts/fetch_data.py</code>) para gerar <code>data/data.json</code>.'}
 };
-/* Idioma atual (fica salvo no navegador). t()=traduz | loc()=formato de data/número | el()=atalho de getElementById */
 let LANG=(localStorage.getItem('obs_lang')||'en');
 const t=(k)=>DICT[LANG][k]||k;
 const loc=()=>LANG==='pt'?'pt-BR':'en-US';
 const el=(id)=>document.getElementById(id);
 const catLabel=(c)=>t('cat'+c.charAt(0).toUpperCase()+c.slice(1));
-
-/* ---- Formatadores de número: valor em US$ (T/B/M/k), preço, porcentagem e rótulo de lastro ---- */
 const fmtUSD=(n)=>{if(n==null||isNaN(n))return '—';const a=Math.abs(n);
   if(a>=1e12)return '$'+(n/1e12).toFixed(2)+'T';if(a>=1e9)return '$'+(n/1e9).toFixed(2)+'B';
   if(a>=1e6)return '$'+(n/1e6).toFixed(2)+'M';if(a>=1e3)return '$'+(n/1e3).toFixed(2)+'k';return '$'+n.toFixed(2);};
 const fmtPrice=(n)=>n==null?'—':(n>=1?'$'+n.toLocaleString(loc(),{maximumFractionDigits:2}):'$'+n.toPrecision(3));
 const fmtPct=(n)=>n==null?'':(n>=0?'+':'')+n.toFixed(2)+'%';
 const pegLabel=(p)=>({peggedUSD:'USD',peggedEUR:'EUR',peggedBRL:'BRL',peggedGBP:'GBP',peggedCHF:'CHF',peggedJPY:'JPY',peggedGold:'Gold'}[p]||(p||'').replace('pegged',''));
-/* ---- Cores e ajustes base de todos os gráficos (Chart.js) ---- */
+const fngClass=(v)=>v<25?['fngExtFear','#f85149']:v<45?['fngFear','#f0883e']:v<55?['fngNeutral','#d29922']:v<75?['fngGreed','#7ee787']:['fngExtGreed','#3fb950'];
 const ACCENT='#a685f2';
 const DOUGH=['#a685f2','#60a5fa','#34d399','#fbbf24','#fb7185','#f472b6','#22d3ee','#a3e635','#fb923c','#94a3b8'];
-/* Cores distintas por categoria de RWA (usadas no gráfico de área empilhada). Mantém o lilás no maior grupo. */
 const CATCOLOR={treasuries:'#a685f2',private_credit:'#34d399',commodities:'#fbbf24',real_estate:'#fb7185',equities:'#60a5fa',other:'#94a3b8'};
-/* Classificador de categoria por palavra-chave no nome (espelha o do coletor). Usado como reserva se o dado ainda não trouxer 'cat'. */
 const RWA_MAP=[['treasuries',['ondo','buidl','superstate','openeden','hashnote','matrixdock','spiko','tbill','t-bill','treasur','franklin','benji','wisdomtree','mountain','usdy','usyc','ustb','backed fi','midas']],['private_credit',['maple','goldfinch','centrifuge','credix','clearpool','truefi','huma','jia','untangled','credit']],['real_estate',['realt','tangible','propy','landshare','estate','lofty','reinno']],['commodities',['paxg','pax gold','tether gold','xaut','kinesis','gold','commodit','cache','silver']],['equities',['dinari','swarm','stock','equit','backed']]];
 function classifyRwa(name){var n=(name||'').toLowerCase();for(var i=0;i<RWA_MAP.length;i++){var keys=RWA_MAP[i][1];for(var j=0;j<keys.length;j++){if(n.indexOf(keys[j])>=0)return RWA_MAP[i][0];}}return 'other';}
 Chart.defaults.color='#9698ab';Chart.defaults.font.family="'JetBrains Mono',ui-monospace,monospace";Chart.defaults.borderColor='rgba(255,255,255,.05)';
-/* Marca d'água "RWA Observatory" desenhada no centro de cada gráfico (também sai na imagem exportada). */
-Chart.register({id:'brandmark',afterDraw:function(chart){var ctx=chart.ctx,a=chart.chartArea;if(!ctx)return;var cx=a?(a.left+a.right)/2:chart.width/2,cy=a?(a.top+a.bottom)/2:chart.height/2;var fs=Math.max(14,Math.min(30,(a?(a.right-a.left):chart.width)/13));ctx.save();ctx.font='700 '+fs+"px 'Inter',system-ui,sans-serif";ctx.fillStyle='rgba(166,133,242,.13)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('RWA Observatory',cx,cy);ctx.restore();}});
-/* Escreve a porcentagem em cima de cada fatia dos gráficos de rosca (esconde fatias < 4% para não poluir). */
+Chart.register({id:'brandmark',afterDraw:function(chart){if(chart.config.options&&chart.config.options.plugins&&chart.config.options.plugins.brandmark===false)return;var ctx=chart.ctx,a=chart.chartArea;if(!ctx)return;var cx=a?(a.left+a.right)/2:chart.width/2,cy=a?(a.top+a.bottom)/2:chart.height/2;var fs=Math.max(14,Math.min(30,(a?(a.right-a.left):chart.width)/13));ctx.save();ctx.font='700 '+fs+"px 'Inter',system-ui,sans-serif";ctx.fillStyle='rgba(166,133,242,.13)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('RWA Observatory',cx,cy);ctx.restore();}});
 Chart.register({id:'slicePct',afterDatasetsDraw:function(chart){var tp=chart.config.type;if(tp!=='doughnut'&&tp!=='pie')return;var ds=chart.data.datasets[0];if(!ds)return;var data=ds.data||[];var total=data.reduce(function(a,b){return a+(+b||0);},0);if(!total)return;var meta=chart.getDatasetMeta(0),ctx=chart.ctx;ctx.save();ctx.font="500 10px 'Inter',system-ui,sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=2.5;ctx.strokeStyle='rgba(20,16,24,.35)';ctx.fillStyle='rgba(255,255,255,.9)';meta.data.forEach(function(arc,i){var pct=(+data[i]||0)/total*100;if(pct<4||!arc.getCenterPoint)return;var p=arc.getCenterPoint();var s=pct.toFixed(pct>=10?0:1)+'%';ctx.strokeText(s,p.x,p.y);ctx.fillText(s,p.x,p.y);});ctx.restore();}});
-
-/* ---- Estado global: LAST = conteúdo do último data.json carregado; CHARTS = gráficos na tela (para recriá-los ao trocar idioma/dados) ---- */
 let LAST=null, CHARTS=[];
 const clearCharts=()=>{CHARTS.forEach(c=>{try{c.destroy()}catch(e){}});CHARTS=[];};
 const gridX={grid:{color:'rgba(255,255,255,.05)'},ticks:{callback:v=>fmtUSD(v)}};
-/* barY = gráfico de barras horizontais | lineChart = gráfico de linha (evolução no tempo) */
-const barY=(id,labels,data,label)=>{const c=new Chart(el(id),{type:'bar',
-  data:{labels,datasets:[{label,data,backgroundColor:ACCENT,borderRadius:4,borderSkipped:false}]},
+const barY=(id,labels,data,label,color)=>{const c=new Chart(el(id),{type:'bar',
+  data:{labels,datasets:[{label,data,backgroundColor:color||ACCENT,borderRadius:4,borderSkipped:false}]},
   options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:gridX,y:{grid:{display:false}}}}});CHARTS.push(c);};
-const lineChart=(id,series,label)=>{if(!series||!series.length)return;
-  const labels=series.map(p=>{const d=new Date(p[0]);return (d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2);});
-  const c=new Chart(el(id),{type:'line',data:{labels,datasets:[{label,data:series.map(p=>p[1]),
-    borderColor:ACCENT,backgroundColor:'rgba(166,133,242,.15)',fill:true,pointRadius:0,borderWidth:2,tension:.25}]},
-    options:{plugins:{legend:{display:false}},interaction:{intersect:false,mode:'index'},
-    scales:{x:{grid:{display:false},ticks:{maxTicksLimit:7,autoSkip:true}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{callback:v=>fmtUSD(v)}}}}});CHARTS.push(c);};
-
-/* ---- Intervalos dos gráficos de evolução (botões 1M/3M/6M/1Y/ALL) ---- */
-/* histState guarda a série completa de cada gráfico; sliceRange recorta pelo período; drawHist redesenha. */
 const RANGES={'1M':30,'3M':90,'6M':180,'1Y':365,'ALL':null};
 const histState={};
-function sliceRange(series,days){
-  if(!days)return series;
-  const cutoff=Date.now()-days*86400000;
-  const out=series.filter(p=>p[0]>=cutoff);
-  return out.length>1?out:series;
-}
-/* hexA = converte cor hex em rgba com transparência (usado no preenchimento das áreas empilhadas). */
+function sliceRange(series,days){if(!days)return series;const cutoff=Date.now()-days*86400000;const out=series.filter(p=>p[0]>=cutoff);return out.length>1?out:series;}
 function hexA(h,a){h=h.replace('#','');return 'rgba('+parseInt(h.slice(0,2),16)+','+parseInt(h.slice(2,4),16)+','+parseInt(h.slice(4,6),16)+','+a+')';}
 function drawHist(id){
   const st=histState[id];if(!st)return;
@@ -298,12 +305,12 @@ function drawHist(id){
   const series=sliceRange(st.series,RANGES[st.range]);
   const labels=series.map(p=>{const d=new Date(p[0]);return (d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2);});
   let cfg;
-  if(st.stack){ /* área empilhada: um conjunto de dados por categoria */
+  if(st.stack){
     const datasets=st.cats.map((c,ci)=>{const col=CATCOLOR[c]||DOUGH[ci%DOUGH.length];return {label:(st.catLabels&&st.catLabels[ci])||c,data:series.map(p=>p[1][ci]),
       backgroundColor:hexA(col,.6),borderColor:col,borderWidth:1,fill:true,pointRadius:0,tension:.2};});
     cfg={type:'line',data:{labels,datasets},options:{plugins:{legend:{position:'top',labels:{boxWidth:10,padding:12}},tooltip:{callbacks:{label:(x)=>x.dataset.label+': '+fmtUSD(x.raw)}}},interaction:{intersect:false,mode:'index'},
       scales:{x:{stacked:true,grid:{display:false},ticks:{maxTicksLimit:8,autoSkip:true}},y:{stacked:true,grid:{color:'rgba(255,255,255,.05)'},ticks:{callback:v=>fmtUSD(v)}}}}};
-  }else{ /* linha simples (evolução de um único valor) */
+  }else{
     cfg={type:'line',data:{labels,datasets:[{label:st.label,data:series.map(p=>p[1]),
       borderColor:ACCENT,backgroundColor:'rgba(166,133,242,.15)',fill:true,pointRadius:0,borderWidth:2,tension:.25}]},
       options:{plugins:{legend:{display:false}},interaction:{intersect:false,mode:'index'},
@@ -312,34 +319,28 @@ function drawHist(id){
   st.chart=new Chart(el(id),cfg);CHARTS.push(st.chart);
   document.querySelectorAll('.rb[data-target="'+id+'"]').forEach(b=>b.classList.toggle('active',b.dataset.range===st.range));
 }
-function histChart(id,series,label){
-  if(!series||!series.length)return;
-  const prev=histState[id]&&histState[id].range;
-  histState[id]={series:series,label:label,range:prev||'6M'};
-  drawHist(id);
-}
-/* histStack = gráfico de área empilhada (várias categorias). series = [[date_ms,[v_cat1,v_cat2,...]], ...] */
-function histStack(id,cats,catLabels,series){
-  if(!series||!series.length)return;
-  const prev=histState[id]&&histState[id].range;
-  histState[id]={stack:true,cats:cats,catLabels:catLabels,series:series,range:prev||'ALL'};
-  drawHist(id);
-}
-/* Clique nos botões de intervalo: troca o período selecionado e redesenha aquele gráfico. */
-document.addEventListener('click',function(ev){var b=ev.target.closest('.rb');if(!b)return;
-  var id=b.dataset.target,st=histState[id];if(!st)return;st.range=b.dataset.range;drawHist(id);});
-
-/* ---- Navegação entre as abas (Macro / RWA / Stablecoins / DeFi) ---- */
+function histChart(id,series,label){if(!series||!series.length)return;const prev=histState[id]&&histState[id].range;histState[id]={series:series,label:label,range:prev||'6M'};drawHist(id);}
+function histStack(id,cats,catLabels,series){if(!series||!series.length)return;const prev=histState[id]&&histState[id].range;histState[id]={stack:true,cats:cats,catLabels:catLabels,series:series,range:prev||'ALL'};drawHist(id);}
+document.addEventListener('click',function(ev){var b=ev.target.closest('.rb');if(!b)return;var id=b.dataset.target,st=histState[id];if(!st)return;st.range=b.dataset.range;drawHist(id);});
 el('tabs').addEventListener('click',(ev)=>{const b=ev.target.closest('.navi');if(!b)return;
   document.querySelectorAll('.navi').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   b.classList.add('active');el('page-'+b.dataset.tab).classList.add('active');});
-
 const rowsMovers=(list)=>list.map(c=>{const cls=c.change_24h>=0?'up':'down';
   return `<div class="mv-row"><span><span class="nm">${(c.symbol||'').toUpperCase()}</span><span class="s">${c.name||''}</span></span><span class="p ${cls}">${fmtPct(c.change_24h)}</span></div>`;}).join('');
-
+const emptyRow=(n)=>`<tr><td colspan="${n}" class="empty">${t('await')}</td></tr>`;
 /* ===================== PREENCHIMENTO DAS ABAS ===================== */
-/* Cada render*() recebe um pedaço do data.json e escreve os números, gráficos e tabelas na tela. */
+function renderFng(f){
+  if(!f){el('fngCard').style.display='none';return;}
+  el('fngCard').style.display='';
+  const cc=fngClass(f.value),color=cc[1];
+  el('fng-val').textContent=f.value;el('fng-val').style.color=color;
+  el('fng-cls').textContent=t(cc[0]);el('fng-cls').style.color=color;
+  el('fng-mark').style.left=Math.max(0,Math.min(100,f.value))+'%';
+  if(f.history&&f.history.length){const c=new Chart(el('chFng'),{type:'line',
+    data:{labels:f.history.map(_=>''),datasets:[{data:f.history.map(p=>p[1]),borderColor:color,backgroundColor:'transparent',pointRadius:0,borderWidth:2,tension:.3}]},
+    options:{plugins:{legend:{display:false},tooltip:{enabled:false},brandmark:false},scales:{x:{display:false},y:{display:false,min:0,max:100}}}});CHARTS.push(c);}
+}
 function renderMacro(m){
   if(!m)return;
   el('k-mcap').textContent=fmtUSD(m.market_cap_usd);
@@ -362,6 +363,19 @@ function renderMacro(m){
     return `<tr><td class="rank">${i+1}</td><td><span class="nm">${c.name||''}</span><span class="sym">${(c.symbol||'').toUpperCase()}</span></td>
       <td class="num" data-v="${c.price??''}">${fmtPrice(c.price)}</td><td class="num" data-v="${c.market_cap??''}">${fmtUSD(c.market_cap)}</td>
       <td class="num ${cls}" data-v="${ch??''}">${ch==null?'':fmtPct(ch)}</td></tr>`;}).join('')||emptyRow(5);
+}
+function renderGreen(g){
+  if(!g)return;
+  el('k-green-mcap').textContent=fmtUSD(g.total_mcap);
+  el('k-green-n').textContent=g.count!=null?g.count:'—';
+  const a=(g.assets||[]);
+  if(a.length){el('e-green').style.display='none';barY('chGreen',a.slice(0,12).map(x=>x.symbol),a.slice(0,12).map(x=>x.market_cap),t('lblMcap'),'#3fb950');}
+  else el('e-green').style.display='block';
+  el('greenTable').tBodies[0].innerHTML=a.map((c,i)=>{const ch=c.change_24h;const cls=ch==null?'':(ch>=0?'up':'down');
+    return `<tr><td class="rank">${i+1}</td><td><span class="nm">${c.name||''}</span><span class="sym">${(c.symbol||'').toUpperCase()}</span></td>
+      <td><span class="tag g">${t('reason_'+c.reason)}</span></td>
+      <td class="num" data-v="${c.price??''}">${fmtPrice(c.price)}</td><td class="num" data-v="${c.market_cap??''}">${fmtUSD(c.market_cap)}</td>
+      <td class="num ${cls}" data-v="${ch??''}">${ch==null?'':fmtPct(ch)}</td></tr>`;}).join('')||emptyRow(6);
 }
 function renderRwa(r){
   if(!r)return;
@@ -403,17 +417,13 @@ function renderDefi(d){
   else el('e-defi').style.display='block';
   el('chainTable').tBodies[0].innerHTML=cs.map((c,i)=>`<tr><td class="rank">${i+1}</td><td class="nm">${c.name||''}</td><td class="num" data-v="${c.tvl??''}">${fmtUSD(c.tvl)}</td></tr>`).join('')||emptyRow(3);
 }
-const emptyRow=(n)=>`<tr><td colspan="${n}" class="empty">${t('await')}</td></tr>`;
-
-/* renderAll = redesenha tudo: destrói os gráficos antigos e recria as 4 abas com os dados atuais. */
 function renderAll(){
   clearCharts();
   if(LAST){
     if(LAST.updated_at)el('updated').textContent=new Date(LAST.updated_at).toLocaleString(loc());
-    renderMacro(LAST.macro);renderRwa(LAST.rwa);renderStables(LAST.stables);renderDefi(LAST.defi);
+    renderFng(LAST.fng);renderMacro(LAST.macro);renderGreen(LAST.green);renderRwa(LAST.rwa);renderStables(LAST.stables);renderDefi(LAST.defi);
   }
 }
-
 /* ---- ordenação + busca ---- */
 function cellKey(td){if(td.dataset.v!==undefined&&td.dataset.v!==''){const n=parseFloat(td.dataset.v);if(!isNaN(n))return n;}const raw=td.textContent.trim();const n=parseFloat(raw.replace(/[^0-9.\-]/g,''));return isNaN(n)?raw.toLowerCase():n;}
 function sortTable(table,idx,th){
@@ -430,8 +440,6 @@ function enhanceTable(id){const table=el(id);[...table.tHead.rows[0].cells].forE
 function enhanceSearch(inputId,tableId){const inp=el(inputId),table=el(tableId);
   inp.addEventListener('input',()=>{const q=inp.value.toLowerCase();
     [...table.tBodies[0].rows].forEach(r=>{if(r.cells.length<2)return;r.style.display=r.textContent.toLowerCase().includes(q)?'':'none';});});}
-
-/* ---- applyLang = aplica o idioma: troca todo texto marcado com data-i18n, atualiza títulos e redesenha ---- */
 function applyLang(){
   document.documentElement.lang=LANG==='pt'?'pt-BR':'en';
   document.querySelectorAll('[data-i18n]').forEach(e=>{e.textContent=t(e.dataset.i18n);});
@@ -443,11 +451,9 @@ function applyLang(){
 }
 el('lang').addEventListener('click',(ev)=>{const b=ev.target.closest('button');if(!b)return;
   LANG=b.dataset.lang;localStorage.setItem('obs_lang',LANG);applyLang();});
-
 /* ===================== EXPORTAÇÃO (CSV e PNG) ===================== */
-/* Auxiliares de download e de montagem do CSV a partir de tabelas (tableToCSV) e de gráficos (chartToCSV). */
 function downloadURL(url,filename){var a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();}
-function downloadText(text,filename){var blob=new Blob(['\ufeff'+text],{type:'text/csv;charset=utf-8'});var url=URL.createObjectURL(blob);downloadURL(url,filename);setTimeout(function(){URL.revokeObjectURL(url);},1500);}
+function downloadText(text,filename){var blob=new Blob(['﻿'+text],{type:'text/csv;charset=utf-8'});var url=URL.createObjectURL(blob);downloadURL(url,filename);setTimeout(function(){URL.revokeObjectURL(url);},1500);}
 function panelBg(){return (getComputedStyle(document.documentElement).getPropertyValue('--panel').trim())||'#1c1e27';}
 function csvEsc(s){s=String(s==null?'':s);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}
 function tableToCSV(table){if(!table)return '';var rows=[];
@@ -465,7 +471,6 @@ function chartToCSV(id){var st=histState[id];
   var lines=[['label'].concat(ds.map(function(d,i){return csvEsc(d.label||('value'+(i+1)));})).join(',')];
   labels.forEach(function(lb,i){lines.push([csvEsc(lb)].concat(ds.map(function(d){return csvEsc(d.data[i]);})).join(','));});
   return lines.join('\n');}
-/* setupExports = injeta os botões "CSV" e "PNG" no topo de cada card que tenha gráfico ou tabela. */
 function setupExports(){
   document.querySelectorAll('.card').forEach(function(card){
     var head=card.querySelector('.cardhead');if(!head)return;
@@ -487,7 +492,6 @@ function setupExports(){
     });
   });
 }
-/* Clique em CSV/PNG: gera o arquivo — CSV = dados; PNG = imagem (do gráfico via Chart.js ou da tabela via html2canvas). */
 document.addEventListener('click',function(ev){
   var b=ev.target.closest('.exp');if(!b)return;
   var name=b.dataset.name||'export',fmt=b.dataset.fmt,type=b.dataset.type;
@@ -508,19 +512,17 @@ document.addEventListener('click',function(ev){
     html2canvas(card,{backgroundColor:panelBg(),scale:2,ignoreElements:function(e){return e.classList&&e.classList.contains('tools');}}).then(function(cv){downloadURL(cv.toDataURL('image/png'),name+'.png');});
   }
 });
-
 /* ===================== INÍCIO ===================== */
-/* init: liga ordenação/busca das tabelas, cria os botões de exportar, carrega data/data.json e desenha tudo. */
 async function init(){
-  ['coinTable','rwaTable','stblTable','chainTable'].forEach(enhanceTable);
-  enhanceSearch('coinSearch','coinTable');enhanceSearch('rwaSearch','rwaTable');
-  enhanceSearch('stblSearch','stblTable');enhanceSearch('chainSearch','chainTable');
+  ['coinTable','greenTable','rwaTable','stblTable','chainTable'].forEach(enhanceTable);
+  enhanceSearch('coinSearch','coinTable');enhanceSearch('greenSearch','greenTable');
+  enhanceSearch('rwaSearch','rwaTable');enhanceSearch('stblSearch','stblTable');enhanceSearch('chainSearch','chainTable');
   setupExports();
   try{
     LAST=await fetch('./data/data.json?_='+Date.now()).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();});
   }catch(e){
     const b=el('banner');b.style.display='block';
-    ['e-coins','e-rwa','e-stbl','e-defi'].forEach(id=>el(id).style.display='block');
+    ['e-coins','e-green','e-rwa','e-rwahist','e-stbl','e-defi'].forEach(id=>el(id).style.display='block');
   }
   applyLang();
 }
