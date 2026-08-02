@@ -142,7 +142,8 @@ def build_rwa():
     rwa.sort(key=lambda p: p.get("tvl") or 0, reverse=True)
     total = sum((p.get("tvl") or 0) for p in rwa)
     top = [{"name": p.get("name"), "tvl": p.get("tvl"),
-            "chains": (p.get("chains") or [])[:3], "change_1d": p.get("change_1d")} for p in rwa[:15]]
+            "chains": (p.get("chains") or [])[:3], "change_1d": p.get("change_1d"),
+            "cat": classify_rwa(p.get("name"))} for p in rwa[:30]]
     cats = {}
     for p in rwa:
         c = classify_rwa(p.get("name"))
