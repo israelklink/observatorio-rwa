@@ -88,16 +88,32 @@ GREEN = {"ETH": "pos", "ADA": "pos", "DOT": "pos", "ATOM": "pos", "FLOW": "pos",
     "POL": "carbon_neutral", "MATIC": "carbon_neutral", "XNO": "feeless",
     "XCH": "eco_farming", "KLIMA": "carbon", "EWT": "energy"}
 
+# Mecanismo de consenso (curado) de cada ativo verde.
+CONSENSUS = {
+    "ETH": "PoS", "ADA": "Ouroboros PoS", "DOT": "NPoS", "ATOM": "Tendermint PoS", "FLOW": "PoS",
+    "ALGO": "Pure PoS", "CELO": "PoS", "REGEN": "Tendermint PoS", "XTZ": "Liquid PoS",
+    "HBAR": "Hashgraph aBFT", "XLM": "Stellar (FBA)", "AVAX": "Avalanche PoS",
+    "MIOTA": "Tangle (DAG)", "IOTA": "Tangle (DAG)", "CHZ": "PoS", "SOL": "PoH + PoS",
+    "EGLD": "Secure PoS", "NEAR": "PoS", "POL": "PoS", "MATIC": "PoS", "XNO": "ORV",
+    "XCH": "Proof of Space", "KLIMA": "PoS (Polygon)", "EWT": "PoA",
+}
+
 def build_green():
     best = {}
     for t in tickers():
         sym = t.get("symbol")
         if sym in GREEN:
             q = _usd(t)
-            if q.get("market_cap") and (sym not in best or q["market_cap"] > best[sym]["market_cap"]):
+            mc = q.get("market_cap")
+            if mc and (sym not in best or mc > best[sym]["market_cap"]):
                 best[sym] = {"name": t.get("name"), "symbol": sym, "reason": GREEN[sym],
-                    "price": q.get("price"), "market_cap": q.get("market_cap"),
-                    "change_24h": q.get("percent_change_24h")}
+                    "consensus": CONSENSUS.get(sym),
+                    "price": q.get("price"), "market_cap": mc,
+                    "change_24h": q.get("percent_change_24h"),
+                    "change_7d": q.get("percent_change_7d"),
+                    "volume_24h": q.get("volume_24h"),
+                    "circulating_supply": t.get("circulating_supply"),
+                    "max_supply": t.get("max_supply")}
     lst = sorted(best.values(), key=lambda a: a["market_cap"], reverse=True)
     return {"total_mcap": sum(a["market_cap"] for a in lst), "count": len(lst), "assets": lst}
 
