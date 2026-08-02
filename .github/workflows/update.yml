@@ -1,9 +1,10 @@
 name: Atualizar dados (diário)
 
-# Roda todo dia às 08:10 UTC (05:10 no horário de Brasília) e permite disparo manual.
+# Roda 2x por dia: 10:00 e 19:00 UTC (07:00 e 16:00 no horário de Brasília) e permite disparo manual.
 on:
   schedule:
-    - cron: "10 8 * * *"
+    - cron: "0 10 * * *"
+    - cron: "0 19 * * *"
   workflow_dispatch: {}
 
 permissions:
