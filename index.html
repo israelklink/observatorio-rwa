@@ -253,6 +253,8 @@ const pegLabel=(p)=>({peggedUSD:'USD',peggedEUR:'EUR',peggedBRL:'BRL',peggedGBP:
 /* ---- Cores e ajustes base de todos os gráficos (Chart.js) ---- */
 const ACCENT='#a685f2';
 const DOUGH=['#a685f2','#c4b0f7','#7c5cd6','#8b8ea3','#cbb8f9','#6f5bb0','#b9a0f0','#55597a','#d8c9fb','#9a86c8'];
+/* Cores distintas por categoria de RWA (usadas no gráfico de área empilhada). Mantém o lilás no maior grupo. */
+const CATCOLOR={treasuries:'#a685f2',private_credit:'#34d399',commodities:'#fbbf24',real_estate:'#fb7185',equities:'#60a5fa',other:'#94a3b8'};
 Chart.defaults.color='#9698ab';Chart.defaults.font.family="'JetBrains Mono',ui-monospace,monospace";Chart.defaults.borderColor='rgba(255,255,255,.05)';
 /* Marca d'água "RWA Observatory" desenhada no centro de cada gráfico (também sai na imagem exportada). */
 Chart.register({id:'brandmark',afterDraw:function(chart){var ctx=chart.ctx,a=chart.chartArea;if(!ctx)return;var cx=a?(a.left+a.right)/2:chart.width/2,cy=a?(a.top+a.bottom)/2:chart.height/2;var fs=Math.max(14,Math.min(30,(a?(a.right-a.left):chart.width)/13));ctx.save();ctx.font='700 '+fs+"px 'Inter',system-ui,sans-serif";ctx.fillStyle='rgba(166,133,242,.13)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('RWA Observatory',cx,cy);ctx.restore();}});
@@ -291,8 +293,8 @@ function drawHist(id){
   const labels=series.map(p=>{const d=new Date(p[0]);return (d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2);});
   let cfg;
   if(st.stack){ /* área empilhada: um conjunto de dados por categoria */
-    const datasets=st.cats.map((c,ci)=>({label:(st.catLabels&&st.catLabels[ci])||c,data:series.map(p=>p[1][ci]),
-      backgroundColor:hexA(DOUGH[ci%DOUGH.length],.55),borderColor:DOUGH[ci%DOUGH.length],borderWidth:1,fill:true,pointRadius:0,tension:.2}));
+    const datasets=st.cats.map((c,ci)=>{const col=CATCOLOR[c]||DOUGH[ci%DOUGH.length];return {label:(st.catLabels&&st.catLabels[ci])||c,data:series.map(p=>p[1][ci]),
+      backgroundColor:hexA(col,.6),borderColor:col,borderWidth:1,fill:true,pointRadius:0,tension:.2};});
     cfg={type:'line',data:{labels,datasets},options:{plugins:{legend:{position:'top',labels:{boxWidth:10,padding:12}},tooltip:{callbacks:{label:(x)=>x.dataset.label+': '+fmtUSD(x.raw)}}},interaction:{intersect:false,mode:'index'},
       scales:{x:{stacked:true,grid:{display:false},ticks:{maxTicksLimit:8,autoSkip:true}},y:{stacked:true,grid:{color:'rgba(255,255,255,.05)'},ticks:{callback:v=>fmtUSD(v)}}}}};
   }else{ /* linha simples (evolução de um único valor) */
