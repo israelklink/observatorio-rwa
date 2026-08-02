@@ -128,7 +128,7 @@
       <div class="lang" id="lang"><button data-lang="en">EN</button><button data-lang="pt">PT</button></div>
       <div class="dev">
         <span class="by" data-i18n="devBy">Developed by</span>
-        <a href="https://www.linkedin.com/in/israjunior/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg><span>Isra</span></a>
+        <a href="https://www.linkedin.com/in/israjunior/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg><span>Israel Nunes</span></a>
         <!-- Link do GitHub oculto do site (comentado a pedido). Para reexibir, remova as marcas de comentario que envolvem a linha do link (abaixo). -->
         <!-- <a href="https://github.com/israelklink" target="_blank" rel="noopener"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>israelklink</span></a> -->
       </div>
@@ -252,12 +252,14 @@ const fmtPct=(n)=>n==null?'':(n>=0?'+':'')+n.toFixed(2)+'%';
 const pegLabel=(p)=>({peggedUSD:'USD',peggedEUR:'EUR',peggedBRL:'BRL',peggedGBP:'GBP',peggedCHF:'CHF',peggedJPY:'JPY',peggedGold:'Gold'}[p]||(p||'').replace('pegged',''));
 /* ---- Cores e ajustes base de todos os gráficos (Chart.js) ---- */
 const ACCENT='#a685f2';
-const DOUGH=['#a685f2','#c4b0f7','#7c5cd6','#8b8ea3','#cbb8f9','#6f5bb0','#b9a0f0','#55597a','#d8c9fb','#9a86c8'];
+const DOUGH=['#a685f2','#60a5fa','#34d399','#fbbf24','#fb7185','#f472b6','#22d3ee','#a3e635','#fb923c','#94a3b8'];
 /* Cores distintas por categoria de RWA (usadas no gráfico de área empilhada). Mantém o lilás no maior grupo. */
 const CATCOLOR={treasuries:'#a685f2',private_credit:'#34d399',commodities:'#fbbf24',real_estate:'#fb7185',equities:'#60a5fa',other:'#94a3b8'};
 Chart.defaults.color='#9698ab';Chart.defaults.font.family="'JetBrains Mono',ui-monospace,monospace";Chart.defaults.borderColor='rgba(255,255,255,.05)';
 /* Marca d'água "RWA Observatory" desenhada no centro de cada gráfico (também sai na imagem exportada). */
 Chart.register({id:'brandmark',afterDraw:function(chart){var ctx=chart.ctx,a=chart.chartArea;if(!ctx)return;var cx=a?(a.left+a.right)/2:chart.width/2,cy=a?(a.top+a.bottom)/2:chart.height/2;var fs=Math.max(14,Math.min(30,(a?(a.right-a.left):chart.width)/13));ctx.save();ctx.font='700 '+fs+"px 'Inter',system-ui,sans-serif";ctx.fillStyle='rgba(166,133,242,.13)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('RWA Observatory',cx,cy);ctx.restore();}});
+/* Escreve a porcentagem em cima de cada fatia dos gráficos de rosca (esconde fatias < 4% para não poluir). */
+Chart.register({id:'slicePct',afterDatasetsDraw:function(chart){var tp=chart.config.type;if(tp!=='doughnut'&&tp!=='pie')return;var ds=chart.data.datasets[0];if(!ds)return;var data=ds.data||[];var total=data.reduce(function(a,b){return a+(+b||0);},0);if(!total)return;var meta=chart.getDatasetMeta(0),ctx=chart.ctx;ctx.save();ctx.font="700 11px 'Inter',system-ui,sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3;ctx.strokeStyle='rgba(0,0,0,.55)';ctx.fillStyle='#fff';meta.data.forEach(function(arc,i){var pct=(+data[i]||0)/total*100;if(pct<4||!arc.getCenterPoint)return;var p=arc.getCenterPoint();var s=pct.toFixed(pct>=10?0:1)+'%';ctx.strokeText(s,p.x,p.y);ctx.fillText(s,p.x,p.y);});ctx.restore();}});
 
 /* ---- Estado global: LAST = conteúdo do último data.json carregado; CHARTS = gráficos na tela (para recriá-los ao trocar idioma/dados) ---- */
 let LAST=null, CHARTS=[];
@@ -348,7 +350,7 @@ function renderMacro(m){
   else el('e-coins').style.display='block';
   if((m.dominance||[]).length){const c=new Chart(el('chDominance'),{type:'doughnut',
     data:{labels:m.dominance.map(d=>d.symbol),datasets:[{data:m.dominance.map(d=>d.pct),backgroundColor:DOUGH,borderColor:'#1c1e27',borderWidth:2}]},
-    options:{plugins:{legend:{position:'right'}},cutout:'64%'}});CHARTS.push(c);}
+    options:{plugins:{legend:{position:'right'},tooltip:{callbacks:{label:(x)=>x.label+': '+(x.raw!=null?x.raw.toFixed(1):'')+'%'}}},cutout:'64%'}});CHARTS.push(c);}
   const mv=coins.filter(c=>c.change_24h!=null);
   el('gainers').innerHTML=rowsMovers([...mv].sort((a,b)=>b.change_24h-a.change_24h).slice(0,5));
   el('losers').innerHTML=rowsMovers([...mv].sort((a,b)=>a.change_24h-b.change_24h).slice(0,5));
@@ -366,8 +368,8 @@ function renderRwa(r){
   else el('e-rwa').style.display='block';
   const cats=(r.categories||[]).filter(c=>c.tvl>0);
   if(cats.length){const c=new Chart(el('chRwaCat'),{type:'doughnut',
-    data:{labels:cats.map(x=>catLabel(x.cat)),datasets:[{data:cats.map(x=>x.tvl),backgroundColor:DOUGH,borderColor:'#1c1e27',borderWidth:2}]},
-    options:{plugins:{legend:{position:'right'},tooltip:{callbacks:{label:(x)=>x.label+': '+fmtUSD(x.raw)}}},cutout:'60%'}});CHARTS.push(c);}
+    data:{labels:cats.map(x=>catLabel(x.cat)),datasets:[{data:cats.map(x=>x.tvl),backgroundColor:cats.map((x,i)=>CATCOLOR[x.cat]||DOUGH[i%DOUGH.length]),borderColor:'#1c1e27',borderWidth:2}]},
+    options:{plugins:{legend:{position:'right'},tooltip:{callbacks:{label:(x)=>{var tot=x.dataset.data.reduce((a,b)=>a+(+b||0),0);var p=tot?(x.raw/tot*100).toFixed(1):'0';return x.label+': '+fmtUSD(x.raw)+' ('+p+'%)';}}}},cutout:'60%'}});CHARTS.push(c);}
   const hbc=r.history_by_cat;
   if(hbc&&hbc.series&&hbc.series.length){el('e-rwahist').style.display='none';histStack('chRwaHist',hbc.cats,hbc.cats.map(catLabel),hbc.series);}
   else el('e-rwahist').style.display='block';
