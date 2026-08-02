@@ -35,6 +35,9 @@
   .navi svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2}
   .navi:hover{background:rgba(255,255,255,.04);color:var(--ink)}
   .navi.active{background:var(--soft);color:var(--accent2)}
+  .navi.green{color:#3fb950}
+  .navi.green:hover{color:#5fd07a}
+  .navi.green.active{background:rgba(63,185,80,.14);color:#5fd07a}
   .side-foot{margin-top:auto;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
   .lang{display:inline-flex;gap:2px;font-family:var(--mono)}
   .lang button{background:none;border:0;color:var(--muted);padding:4px 6px;font-size:12px;font-weight:600;letter-spacing:1px;cursor:pointer;border-radius:6px}
@@ -129,10 +132,10 @@
     <div class="brand"><div class="mark">◆</div><div><b>Observatory</b><small>RWA · Crypto</small></div></div>
     <nav class="nav" id="tabs">
       <button class="navi active" data-tab="macro"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><span data-i18n="tabMacro">Macro Overview</span></button>
-      <button class="navi" data-tab="green"><svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 014 13c0-5 4-9 12-9 0 6-2 12-5 16z"/><path d="M11 20c-1-4 1-8 5-11"/></svg><span data-i18n="tabGreen">Green assets</span></button>
       <button class="navi" data-tab="rwa"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span data-i18n="tabRwa">Tokenized RWA</span></button>
       <button class="navi" data-tab="stables"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.2h4a1.8 1.8 0 010 3.6h-3a1.8 1.8 0 000 3.6h4"/></svg><span data-i18n="tabStables">Stablecoins</span></button>
       <button class="navi" data-tab="defi"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.6 7.4L11 15.4M16.4 7.4L13 15.4M8 6h8"/></svg><span data-i18n="tabDefi">DeFi by Network</span></button>
+      <button class="navi green" data-tab="green"><svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 014 13c0-5 4-9 12-9 0 6-2 12-5 16z"/><path d="M11 20c-1-4 1-8 5-11"/></svg><span data-i18n="tabGreen">Green assets</span></button>
     </nav>
     <div class="side-foot">
       <div class="lang" id="lang"><button data-lang="en">EN</button><button data-lang="pt">PT</button></div>
@@ -158,15 +161,6 @@
         <div class="stat"><div class="k" data-i18n="kEth">ETH dominance</div><div class="v" id="k-eth">—</div></div>
         <div class="stat"><div class="k" data-i18n="kAssets">Crypto assets</div><div class="v" id="k-assets">—</div></div>
       </div>
-      <!-- Índice de Medo & Ganância -->
-      <div class="card" id="fngCard" style="display:none"><div class="cardhead"><div><h3 data-i18n="fngT">Fear &amp; Greed Index</h3><p class="hint" data-i18n="fngH">Market sentiment, 0 (extreme fear) to 100 (extreme greed).</p></div></div>
-        <div class="gauge-wrap">
-          <div><div class="gauge-num" id="fng-val">—</div><div class="gauge-cls" id="fng-cls"></div></div>
-          <div class="gbar-box"><div class="gbar"><div class="gmark" id="fng-mark" style="left:50%"></div></div>
-            <div class="gscale"><span>0</span><span data-i18n="fngLow">Fear</span><span>50</span><span data-i18n="fngHigh">Greed</span><span>100</span></div></div>
-          <div class="cc" style="height:80px;width:220px;flex:none"><canvas id="chFng"></canvas></div>
-        </div>
-      </div>
       <div class="grid g2 mt">
         <div class="card"><div class="cardhead"><div><h3 data-i18n="macroC1T">Top 10 assets by market cap</h3></div></div><div class="cc"><canvas id="chTopCoins"></canvas></div><div class="empty" id="e-coins" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
         <div class="card"><div class="cardhead"><div><h3 data-i18n="macroC2T">Market dominance</h3></div></div><div class="cc"><canvas id="chDominance"></canvas></div></div>
@@ -177,6 +171,15 @@
       <div class="card mt"><div class="cardhead"><div><h3 data-i18n="coinsT">Assets</h3><p class="hint" data-i18n="coinsH">Price, market cap and 24h change.</p></div><input class="search" id="coinSearch" data-ph="searchPh" placeholder="Search…"/></div>
         <div style="overflow:auto"><table id="coinTable"><thead><tr><th class="rank">#</th><th data-i18n="thCoin">Asset</th><th class="num" data-i18n="thPrice">Price</th><th class="num" data-i18n="thMcap">Market cap</th><th class="num">24h</th></tr></thead><tbody></tbody></table></div>
       </div>
+      <!-- Índice de Medo & Ganância (no final da página Macro) -->
+      <div class="card mt" id="fngCard" style="display:none"><div class="cardhead"><div><h3 data-i18n="fngT">Fear &amp; Greed Index</h3><p class="hint" data-i18n="fngH">Market sentiment, 0 (extreme fear) to 100 (extreme greed).</p></div></div>
+        <div class="gauge-wrap">
+          <div><div class="gauge-num" id="fng-val">—</div><div class="gauge-cls" id="fng-cls"></div></div>
+          <div class="gbar-box"><div class="gbar"><div class="gmark" id="fng-mark" style="left:50%"></div></div>
+            <div class="gscale"><span>0</span><span data-i18n="fngLow">Fear</span><span>50</span><span data-i18n="fngHigh">Greed</span><span>100</span></div></div>
+          <div class="cc" style="height:80px;width:220px;flex:none"><canvas id="chFng"></canvas></div>
+        </div>
+      </div>
     </section>
     <!-- GREEN -->
     <section class="page" id="page-green">
@@ -186,7 +189,7 @@
       <div class="strip"><div class="stat"><div class="k" data-i18n="greenCount">Assets tracked</div><div class="v" id="k-green-n">—</div></div></div>
       <div class="card"><div class="cardhead"><div><h3 data-i18n="greenChartT">Top green assets by market cap</h3></div></div><div class="cc tall"><canvas id="chGreen"></canvas></div><div class="empty" id="e-green" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
       <div class="card mt"><div class="cardhead"><div><h3 data-i18n="greenTableT">Sustainable assets</h3></div><input class="search" id="greenSearch" data-ph="searchPh" placeholder="Search…"/></div>
-        <div style="overflow:auto"><table id="greenTable"><thead><tr><th class="rank">#</th><th data-i18n="thCoin">Asset</th><th data-i18n="thReason">Why green</th><th class="num" data-i18n="thPrice">Price</th><th class="num" data-i18n="thMcap">Market cap</th><th class="num">24h</th></tr></thead><tbody></tbody></table></div>
+        <div style="overflow:auto"><table id="greenTable"><thead><tr><th class="rank">#</th><th data-i18n="thCoin">Asset</th><th data-i18n="thReason">Why green</th><th data-i18n="thConsensus">Consensus</th><th class="num" data-i18n="thPrice">Price</th><th class="num" data-i18n="thMcap">Market cap</th><th class="num">24h</th><th class="num">7d</th><th class="num" data-i18n="thVol">24h vol</th></tr></thead><tbody></tbody></table></div>
       </div>
     </section>
     <!-- RWA -->
@@ -239,8 +242,8 @@ const DICT={
     coinsT:"Assets",coinsH:"Price, market cap and 24h change.",thCoin:"Asset",thPrice:"Price",thMcap:"Market cap",
     fngT:"Fear & Greed Index",fngH:"Market sentiment, 0 (extreme fear) to 100 (extreme greed).",fngLow:"Fear",fngHigh:"Greed",
     fngExtFear:"Extreme fear",fngFear:"Fear",fngNeutral:"Neutral",fngGreed:"Greed",fngExtGreed:"Extreme greed",
-    greenH:"Low-energy (Proof-of-Stake), ReFi and carbon-focused assets. Curated list, live prices.",
-    greenHero:"Combined market cap",greenCount:"Assets tracked",greenChartT:"Top green assets by market cap",greenTableT:"Sustainable assets",thReason:"Why green",
+    greenH:"Low-energy (Proof-of-Stake), ReFi and carbon-focused assets — with consensus mechanism and live market data. Curated list.",
+    greenHero:"Combined market cap",greenCount:"Assets tracked",greenChartT:"Top green assets by market cap",greenTableT:"Sustainable assets",thReason:"Why green",thConsensus:"Consensus",thVol:"24h vol",
     reason_pos:"Proof-of-Stake",reason_low_energy:"Low energy",reason_carbon_negative:"Carbon negative",reason_carbon_neutral:"Carbon neutral",reason_efficient_pos:"Efficient PoS",reason_refi:"ReFi",reason_feeless:"Feeless",reason_eco_farming:"Eco farming",reason_carbon:"Carbon market",reason_energy:"Energy sector",
     kRwaTvl:"Total RWA TVL",kRwaN:"RWA protocols",rwaCatT:"RWA by category",rwaCatH:"Approximate split by asset type (curated).",
     rwaC1T:"Top RWA protocols by TVL",rwaHistT:"RWA growth by category (DeFi TVL)",rwaC2T:"Detailed ranking",rwaC2H:"TVL, networks and 24h change.",thProto:"Protocol",thNetworks:"Networks",thNetwork:"Network",thCat:"Category",
@@ -257,8 +260,8 @@ const DICT={
     coinsT:"Ativos",coinsH:"Preço, capitalização e variação em 24h.",thCoin:"Ativo",thPrice:"Preço",thMcap:"Cap. mercado",
     fngT:"Índice de Medo & Ganância",fngH:"Sentimento do mercado, 0 (medo extremo) a 100 (ganância extrema).",fngLow:"Medo",fngHigh:"Ganância",
     fngExtFear:"Medo extremo",fngFear:"Medo",fngNeutral:"Neutro",fngGreed:"Ganância",fngExtGreed:"Ganância extrema",
-    greenH:"Ativos de baixo consumo (Proof-of-Stake), ReFi e foco em carbono. Lista curada, preços ao vivo.",
-    greenHero:"Cap. de mercado combinada",greenCount:"Ativos monitorados",greenChartT:"Maiores ativos verdes por capitalização",greenTableT:"Ativos sustentáveis",thReason:"Por que é verde",
+    greenH:"Ativos de baixo consumo (Proof-of-Stake), ReFi e foco em carbono — com mecanismo de consenso e dados de mercado ao vivo. Lista curada.",
+    greenHero:"Cap. de mercado combinada",greenCount:"Ativos monitorados",greenChartT:"Maiores ativos verdes por capitalização",greenTableT:"Ativos sustentáveis",thReason:"Por que é verde",thConsensus:"Consenso",thVol:"Vol 24h",
     reason_pos:"Proof-of-Stake",reason_low_energy:"Baixo consumo",reason_carbon_negative:"Carbono negativo",reason_carbon_neutral:"Carbono neutro",reason_efficient_pos:"PoS eficiente",reason_refi:"ReFi",reason_feeless:"Sem taxas",reason_eco_farming:"Cultivo ecológico",reason_carbon:"Mercado de carbono",reason_energy:"Setor de energia",
     kRwaTvl:"TVL total em RWA",kRwaN:"Protocolos RWA",rwaCatT:"RWA por categoria",rwaCatH:"Divisão aproximada por tipo de ativo (curada).",
     rwaC1T:"Top protocolos RWA por TVL",rwaHistT:"Evolução do RWA por categoria (TVL em DeFi)",rwaC2T:"Ranking detalhado",rwaC2H:"TVL, redes e variação em 24h.",thProto:"Protocolo",thNetworks:"Redes",thNetwork:"Rede",thCat:"Categoria",
@@ -371,11 +374,14 @@ function renderGreen(g){
   const a=(g.assets||[]);
   if(a.length){el('e-green').style.display='none';barY('chGreen',a.slice(0,12).map(x=>x.symbol),a.slice(0,12).map(x=>x.market_cap),t('lblMcap'),'#3fb950');}
   else el('e-green').style.display='block';
-  el('greenTable').tBodies[0].innerHTML=a.map((c,i)=>{const ch=c.change_24h;const cls=ch==null?'':(ch>=0?'up':'down');
+  el('greenTable').tBodies[0].innerHTML=a.map((c,i)=>{const ch=c.change_24h;const cls=ch==null?'':(ch>=0?'up':'down');const c7=c.change_7d;const cls7=c7==null?'':(c7>=0?'up':'down');
     return `<tr><td class="rank">${i+1}</td><td><span class="nm">${c.name||''}</span><span class="sym">${(c.symbol||'').toUpperCase()}</span></td>
       <td><span class="tag g">${t('reason_'+c.reason)}</span></td>
+      <td style="color:var(--muted)">${c.consensus||'—'}</td>
       <td class="num" data-v="${c.price??''}">${fmtPrice(c.price)}</td><td class="num" data-v="${c.market_cap??''}">${fmtUSD(c.market_cap)}</td>
-      <td class="num ${cls}" data-v="${ch??''}">${ch==null?'':fmtPct(ch)}</td></tr>`;}).join('')||emptyRow(6);
+      <td class="num ${cls}" data-v="${ch??''}">${ch==null?'':fmtPct(ch)}</td>
+      <td class="num ${cls7}" data-v="${c7??''}">${c7==null?'':fmtPct(c7)}</td>
+      <td class="num" data-v="${c.volume_24h??''}">${fmtUSD(c.volume_24h)}</td></tr>`;}).join('')||emptyRow(9);
 }
 function renderRwa(r){
   if(!r)return;
