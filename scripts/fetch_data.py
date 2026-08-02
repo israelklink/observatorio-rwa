@@ -157,6 +157,49 @@ def cg_get(path):
         url += ("&" if "?" in path else "?") + "x_cg_demo_api_key=" + CG_KEY
     return get(url)
 
+_CATEGORIES = None
+def cg_categories():
+    global _CATEGORIES
+    if _CATEGORIES is None:
+        _CATEGORIES = cg_get("/coins/categories")
+    return _CATEGORIES
+
+def _f(x):
+    try:
+        return float(x)
+    except Exception:
+        return None
+
+# Setores (categorias) por capitalização — reaproveita /coins/categories
+def build_sectors():
+    rows = [{"name": c.get("name"), "market_cap": c.get("market_cap"),
+             "change_24h": c.get("market_cap_change_24h")}
+            for c in cg_categories() if c.get("market_cap")]
+    rows.sort(key=lambda x: x["market_cap"], reverse=True)
+    return rows[:12]
+
+# DeFi global (market cap + dominância) — /global/decentralized_finance_defi
+def build_defi_global():
+    d = (cg_get("/global/decentralized_finance_defi") or {}).get("data") or {}
+    return {"market_cap": _f(d.get("defi_market_cap")), "dominance": _f(d.get("defi_dominance")),
+            "volume_24h": _f(d.get("trading_volume_24h")), "top_coin": d.get("top_coin_name"),
+            "top_coin_dominance": _f(d.get("top_coin_defi_dominance"))}
+
+# Tesouraria de empresas/governos (BTC/ETH) — /{entity}/public_treasury/{coin}
+def _treasury(coin):
+    d = cg_get("/companies/public_treasury/" + coin) or {}
+    comps = d.get("companies") or []
+    return {"total_holdings": d.get("total_holdings"), "total_value_usd": d.get("total_value_usd"),
+            "market_cap_dominance": d.get("market_cap_dominance"),
+            "companies": [{"name": c.get("name"), "symbol": c.get("symbol"),
+                "country": c.get("country"), "holdings": c.get("total_holdings"),
+                "value_usd": c.get("total_current_value_usd"),
+                "pct_supply": c.get("percentage_of_total_supply")} for c in comps[:15]]}
+
+def build_treasury():
+    return {"btc": safe(lambda: _treasury("bitcoin"), "treasury btc"),
+            "eth": safe(lambda: _treasury("ethereum"), "treasury eth")}
+
 def _cg_class(name, cid):
     s = (name or "").lower() + " " + (cid or "").lower()
     if not ("tokeniz" in s or "real world" in s or "rwa" in s):
@@ -170,7 +213,7 @@ def _cg_class(name, cid):
     return None
 
 def build_asset_classes():
-    cats = cg_get("/coins/categories")
+    cats = cg_categories()
     classes = {}
     umbrella = None
     for c in cats:
@@ -260,8 +303,9 @@ def build_defi(stables_total):
     h = safe(lambda: get("https://api.llama.fi/v2/historicalChainTvl"), "tvl history")
     if h:
         history = downsample([[int(pt["date"]) * 1000, pt.get("tvl")] for pt in h])
+    g = safe(build_defi_global, "defi global")
     return {"total_tvl": total, "chains_count": len(chains), "chains": top,
-            "stablecoins_total": stables_total, "tvl_history": history}
+            "stablecoins_total": stables_total, "tvl_history": history, "global": g}
 
 
 def main():
@@ -274,6 +318,8 @@ def main():
         "green": safe(build_green, "green"),
         "fng": safe(build_fng, "fng"),
         "rwa": safe(build_rwa, "rwa"),
+        "sectors": safe(build_sectors, "sectors"),
+        "treasury": safe(build_treasury, "treasury"),
         "stables": stables,
         "defi": safe(lambda: build_defi(stables_total), "defi"),
     }
