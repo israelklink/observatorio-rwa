@@ -129,7 +129,8 @@
       <div class="dev">
         <span class="by" data-i18n="devBy">Developed by</span>
         <a href="https://www.linkedin.com/in/israjunior/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg><span>Israel Nunes</span></a>
-        <a href="https://github.com/israelklink" target="_blank" rel="noopener"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>israelklink</span></a>
+        <!-- Link do GitHub oculto do site (comentado a pedido). Para reexibir, remova as marcas de comentario que envolvem a linha do link (abaixo). -->
+        <!-- <a href="https://github.com/israelklink" target="_blank" rel="noopener"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>israelklink</span></a> -->
       </div>
     </div>
   </aside>
@@ -170,6 +171,7 @@
         <div class="card"><div class="cardhead"><div><h3 data-i18n="rwaCatT">RWA by category</h3><p class="hint" data-i18n="rwaCatH">Approximate split by asset type (curated).</p></div></div><div class="cc"><canvas id="chRwaCat"></canvas></div></div>
         <div class="card"><div class="cardhead"><div><h3 data-i18n="rwaC1T">Top RWA protocols by TVL</h3></div></div><div class="cc"><canvas id="chRwa"></canvas></div><div class="empty" id="e-rwa" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
       </div>
+      <div class="card mt"><div class="cardhead"><div><h3 data-i18n="rwaHistT">RWA growth by category (DeFi TVL)</h3></div><div class="rangebtns"><button class="rb" data-target="chRwaHist" data-range="1M">1M</button><button class="rb" data-target="chRwaHist" data-range="3M">3M</button><button class="rb" data-target="chRwaHist" data-range="6M">6M</button><button class="rb" data-target="chRwaHist" data-range="1Y">1Y</button><button class="rb" data-target="chRwaHist" data-range="ALL">ALL</button></div></div><div class="cc tall"><canvas id="chRwaHist"></canvas></div><div class="empty" id="e-rwahist" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
       <div class="card mt"><div class="cardhead"><div><h3 data-i18n="rwaC2T">Detailed ranking</h3><p class="hint" data-i18n="rwaC2H">TVL, networks and 24h change.</p></div><input class="search" id="rwaSearch" data-ph="searchPh" placeholder="Search…"/></div>
         <div style="overflow:auto"><table id="rwaTable"><thead><tr><th class="rank">#</th><th data-i18n="thProto">Protocol</th><th data-i18n="thNetworks">Networks</th><th class="num">TVL</th><th class="num">24h</th></tr></thead><tbody></tbody></table></div>
       </div>
@@ -213,7 +215,7 @@ const DICT={
     moversT:"24h movers",moversH:"Biggest gainers and losers among the top 50.",gainers:"Top gainers",losers:"Top losers",
     coinsT:"Assets",coinsH:"Price, market cap and 24h change.",thCoin:"Asset",thPrice:"Price",thMcap:"Market cap",
     kRwaTvl:"Total RWA TVL",kRwaN:"RWA protocols",rwaCatT:"RWA by category",rwaCatH:"Approximate split by asset type (curated).",
-    rwaC1T:"Top RWA protocols by TVL",rwaC2T:"Detailed ranking",rwaC2H:"TVL, networks and 24h change.",thProto:"Protocol",thNetworks:"Networks",thNetwork:"Network",
+    rwaC1T:"Top RWA protocols by TVL",rwaHistT:"RWA growth by category (DeFi TVL)",rwaC2T:"Detailed ranking",rwaC2H:"TVL, networks and 24h change.",thProto:"Protocol",thNetworks:"Networks",thNetwork:"Network",
     stblHero:"Total stablecoin cap",stblCount:"Stablecoins tracked",stblHistT:"Stablecoin supply over time",stblTableT:"Top stablecoins",thStable:"Stablecoin",thPeg:"Peg",thCap:"Market cap",
     kTvl:"Total DeFi TVL",kStable:"Stablecoin cap",kChains:"Networks tracked",tvlHistT:"DeFi TVL over time",defiC1T:"Top 15 networks by TVL",defiC2T:"Network ranking",
     await:"Awaiting the first data collection.",devBy:"Developed by",searchPh:"Search…",exportImg:"Save as PNG",exportCsv:"Export CSV",
@@ -226,7 +228,7 @@ const DICT={
     moversT:"Maiores variações (24h)",moversH:"Maiores altas e baixas entre as 50 maiores.",gainers:"Maiores altas",losers:"Maiores baixas",
     coinsT:"Ativos",coinsH:"Preço, capitalização e variação em 24h.",thCoin:"Ativo",thPrice:"Preço",thMcap:"Cap. mercado",
     kRwaTvl:"TVL total em RWA",kRwaN:"Protocolos RWA",rwaCatT:"RWA por categoria",rwaCatH:"Divisão aproximada por tipo de ativo (curada).",
-    rwaC1T:"Top protocolos RWA por TVL",rwaC2T:"Ranking detalhado",rwaC2H:"TVL, redes e variação em 24h.",thProto:"Protocolo",thNetworks:"Redes",thNetwork:"Rede",
+    rwaC1T:"Top protocolos RWA por TVL",rwaHistT:"Evolução do RWA por categoria (TVL em DeFi)",rwaC2T:"Ranking detalhado",rwaC2H:"TVL, redes e variação em 24h.",thProto:"Protocolo",thNetworks:"Redes",thNetwork:"Rede",
     stblHero:"Cap. total de stablecoins",stblCount:"Stablecoins monitoradas",stblHistT:"Evolução da oferta de stablecoins",stblTableT:"Maiores stablecoins",thStable:"Stablecoin",thPeg:"Lastro",thCap:"Cap. mercado",
     kTvl:"TVL total em DeFi",kStable:"Cap. de stablecoins",kChains:"Redes monitoradas",tvlHistT:"Evolução do TVL em DeFi",defiC1T:"Top 15 redes por TVL",defiC2T:"Ranking de redes",
     await:"Aguardando a primeira coleta de dados.",devBy:"Desenvolvido por",searchPh:"Buscar…",exportImg:"Salvar como PNG",exportCsv:"Exportar CSV",
@@ -280,21 +282,39 @@ function sliceRange(series,days){
   const out=series.filter(p=>p[0]>=cutoff);
   return out.length>1?out:series;
 }
+/* hexA = converte cor hex em rgba com transparência (usado no preenchimento das áreas empilhadas). */
+function hexA(h,a){h=h.replace('#','');return 'rgba('+parseInt(h.slice(0,2),16)+','+parseInt(h.slice(2,4),16)+','+parseInt(h.slice(4,6),16)+','+a+')';}
 function drawHist(id){
   const st=histState[id];if(!st)return;
   if(st.chart){try{st.chart.destroy()}catch(e){}}
   const series=sliceRange(st.series,RANGES[st.range]);
   const labels=series.map(p=>{const d=new Date(p[0]);return (d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2);});
-  st.chart=new Chart(el(id),{type:'line',data:{labels,datasets:[{label:st.label,data:series.map(p=>p[1]),
-    borderColor:ACCENT,backgroundColor:'rgba(166,133,242,.15)',fill:true,pointRadius:0,borderWidth:2,tension:.25}]},
-    options:{plugins:{legend:{display:false}},interaction:{intersect:false,mode:'index'},
-    scales:{x:{grid:{display:false},ticks:{maxTicksLimit:8,autoSkip:true}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{callback:v=>fmtUSD(v)}}}}});CHARTS.push(st.chart);
+  let cfg;
+  if(st.stack){ /* área empilhada: um conjunto de dados por categoria */
+    const datasets=st.cats.map((c,ci)=>({label:(st.catLabels&&st.catLabels[ci])||c,data:series.map(p=>p[1][ci]),
+      backgroundColor:hexA(DOUGH[ci%DOUGH.length],.55),borderColor:DOUGH[ci%DOUGH.length],borderWidth:1,fill:true,pointRadius:0,tension:.2}));
+    cfg={type:'line',data:{labels,datasets},options:{plugins:{legend:{position:'top',labels:{boxWidth:10,padding:12}},tooltip:{callbacks:{label:(x)=>x.dataset.label+': '+fmtUSD(x.raw)}}},interaction:{intersect:false,mode:'index'},
+      scales:{x:{stacked:true,grid:{display:false},ticks:{maxTicksLimit:8,autoSkip:true}},y:{stacked:true,grid:{color:'rgba(255,255,255,.05)'},ticks:{callback:v=>fmtUSD(v)}}}}};
+  }else{ /* linha simples (evolução de um único valor) */
+    cfg={type:'line',data:{labels,datasets:[{label:st.label,data:series.map(p=>p[1]),
+      borderColor:ACCENT,backgroundColor:'rgba(166,133,242,.15)',fill:true,pointRadius:0,borderWidth:2,tension:.25}]},
+      options:{plugins:{legend:{display:false}},interaction:{intersect:false,mode:'index'},
+      scales:{x:{grid:{display:false},ticks:{maxTicksLimit:8,autoSkip:true}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{callback:v=>fmtUSD(v)}}}}};
+  }
+  st.chart=new Chart(el(id),cfg);CHARTS.push(st.chart);
   document.querySelectorAll('.rb[data-target="'+id+'"]').forEach(b=>b.classList.toggle('active',b.dataset.range===st.range));
 }
 function histChart(id,series,label){
   if(!series||!series.length)return;
   const prev=histState[id]&&histState[id].range;
   histState[id]={series:series,label:label,range:prev||'6M'};
+  drawHist(id);
+}
+/* histStack = gráfico de área empilhada (várias categorias). series = [[date_ms,[v_cat1,v_cat2,...]], ...] */
+function histStack(id,cats,catLabels,series){
+  if(!series||!series.length)return;
+  const prev=histState[id]&&histState[id].range;
+  histState[id]={stack:true,cats:cats,catLabels:catLabels,series:series,range:prev||'ALL'};
   drawHist(id);
 }
 /* Clique nos botões de intervalo: troca o período selecionado e redesenha aquele gráfico. */
@@ -346,6 +366,9 @@ function renderRwa(r){
   if(cats.length){const c=new Chart(el('chRwaCat'),{type:'doughnut',
     data:{labels:cats.map(x=>catLabel(x.cat)),datasets:[{data:cats.map(x=>x.tvl),backgroundColor:DOUGH,borderColor:'#1c1e27',borderWidth:2}]},
     options:{plugins:{legend:{position:'right'},tooltip:{callbacks:{label:(x)=>x.label+': '+fmtUSD(x.raw)}}},cutout:'60%'}});CHARTS.push(c);}
+  const hbc=r.history_by_cat;
+  if(hbc&&hbc.series&&hbc.series.length){el('e-rwahist').style.display='none';histStack('chRwaHist',hbc.cats,hbc.cats.map(catLabel),hbc.series);}
+  else el('e-rwahist').style.display='block';
   el('rwaTable').tBodies[0].innerHTML=ps.map((p,i)=>{const c=p.change_1d;const cls=c==null?'':(c>=0?'up':'down');
     return `<tr><td class="rank">${i+1}</td><td class="nm">${p.name||''}</td><td style="color:var(--muted)">${(p.chains||[]).join(', ')}</td>
       <td class="num" data-v="${p.tvl??''}">${fmtUSD(p.tvl)}</td><td class="num ${cls}" data-v="${c??''}">${c==null?'':fmtPct(c)}</td></tr>`;}).join('')||emptyRow(5);
@@ -425,6 +448,9 @@ function tableToCSV(table){if(!table)return '';var rows=[];
     rows.push([].map.call(r.cells,function(td){var v=td.dataset&&td.dataset.v;return csvEsc((v!==undefined&&v!=='')?v:td.textContent.trim());}).join(','));});
   return rows.join('\n');}
 function chartToCSV(id){var st=histState[id];
+  if(st&&st.stack){var rs=sliceRange(st.series,RANGES[st.range]);
+    var head=['date'].concat(st.catLabels||st.cats).map(csvEsc).join(',');
+    return head+'\n'+rs.map(function(p){return [new Date(p[0]).toISOString().slice(0,10)].concat(p[1]).map(csvEsc).join(',');}).join('\n');}
   if(st&&st.series){var rng=sliceRange(st.series,RANGES[st.range]);return 'date,value\n'+rng.map(function(p){return new Date(p[0]).toISOString().slice(0,10)+','+p[1];}).join('\n');}
   var ch=(window.Chart&&Chart.getChart)?Chart.getChart(id):null;if(!ch)return '';
   var labels=ch.data.labels||[],ds=ch.data.datasets||[];
