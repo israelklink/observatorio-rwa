@@ -133,9 +133,9 @@
     <nav class="nav" id="tabs">
       <button class="navi active" data-tab="macro"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><span data-i18n="tabMacro">Macro Overview</span></button>
       <button class="navi" data-tab="rwa"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span data-i18n="tabRwa">Tokenized RWA</span></button>
-      <button class="navi" data-tab="stables"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.2h4a1.8 1.8 0 010 3.6h-3a1.8 1.8 0 000 3.6h4"/></svg><span data-i18n="tabStables">Stablecoins</span></button>
       <button class="navi" data-tab="defi"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.6 7.4L11 15.4M16.4 7.4L13 15.4M8 6h8"/></svg><span data-i18n="tabDefi">DeFi by Network</span></button>
       <button class="navi" data-tab="green"><svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 014 13c0-5 4-9 12-9 0 6-2 12-5 16z"/><path d="M11 20c-1-4 1-8 5-11"/></svg><span data-i18n="tabGreen">Green assets</span></button>
+      <button class="navi" data-tab="stables"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.2h4a1.8 1.8 0 010 3.6h-3a1.8 1.8 0 000 3.6h4"/></svg><span data-i18n="tabStables">Stablecoins</span></button>
     </nav>
     <div class="side-foot">
       <div class="lang" id="lang"><button data-lang="en">EN</button><button data-lang="pt">PT</button></div>
@@ -298,9 +298,9 @@ Chart.register({id:'slicePct',afterDatasetsDraw:function(chart){var tp=chart.con
 let LAST=null, CHARTS=[];
 const clearCharts=()=>{CHARTS.forEach(c=>{try{c.destroy()}catch(e){}});CHARTS=[];};
 const gridX={grid:{color:'rgba(255,255,255,.05)'},ticks:{callback:v=>fmtUSD(v)}};
-const barY=(id,labels,data,label,color)=>{const c=new Chart(el(id),{type:'bar',
+const barY=(id,labels,data,label,color,xmax)=>{const xs=Object.assign({},gridX,xmax?{max:xmax}:{});const c=new Chart(el(id),{type:'bar',
   data:{labels,datasets:[{label,data,backgroundColor:color||ACCENT,borderRadius:4,borderSkipped:false}]},
-  options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:gridX,y:{grid:{display:false}}}}});CHARTS.push(c);};
+  options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:xs,y:{grid:{display:false}}}}});CHARTS.push(c);};
 /* treemapChart = mapa de blocos: tamanho = capitalização, cor = variação 24h (verde sobe / vermelho cai) */
 const treemapChart=(id,items)=>{
   if(!items||!items.length)return false;
@@ -411,7 +411,7 @@ function renderRwa(r){
   if(hbc&&hbc.series&&hbc.series.length){el('e-rwahist').style.display='none';histStack('chRwaHist',hbc.cats,hbc.cats.map(catLabel),hbc.series);}
   else el('e-rwahist').style.display='block';
   const ac=r.asset_classes;
-  if(ac&&ac.classes&&ac.classes.length){el('e-ac').style.display='none';barY('chAssetClass',ac.classes.map(x=>acLabel(x.cat)),ac.classes.map(x=>x.market_cap),t('lblMcap'));}
+  if(ac&&ac.classes&&ac.classes.length){el('e-ac').style.display='none';var acv=ac.classes.map(x=>x.market_cap);barY('chAssetClass',ac.classes.map(x=>acLabel(x.cat)),acv,t('lblMcap'),null,Math.max.apply(null,acv)*1.02);}
   else el('e-ac').style.display='block';
   el('rwaTable').tBodies[0].innerHTML=ps.map((p,i)=>{const c=p.change_1d;const cls=c==null?'':(c>=0?'up':'down');const cat=p.cat||classifyRwa(p.name);const col=CATCOLOR[cat]||'#94a3b8';
     return `<tr><td class="rank">${i+1}</td><td class="nm">${p.name||''}</td><td><span class="catdot" style="background:${col}"></span>${catLabel(cat)}</td><td style="color:var(--muted)">${(p.chains||[]).join(', ')}</td>
