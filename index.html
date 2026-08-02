@@ -200,6 +200,7 @@
         <div class="card"><div class="cardhead"><div><h3 data-i18n="rwaCatT">RWA by category</h3><p class="hint" data-i18n="rwaCatH">Approximate split by asset type (curated).</p></div></div><div class="cc"><canvas id="chRwaCat"></canvas></div></div>
         <div class="card"><div class="cardhead"><div><h3 data-i18n="rwaC1T">Top RWA protocols by TVL</h3></div></div><div class="cc"><canvas id="chRwa"></canvas></div><div class="empty" id="e-rwa" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
       </div>
+      <div class="card mt"><div class="cardhead"><div><h3 data-i18n="acT">Tokenized asset classes (market value)</h3><p class="hint" data-i18n="acH">Market value by asset class of listed tokens (treasuries, gold, stocks…). Source: CoinGecko.</p></div></div><div class="cc"><canvas id="chAssetClass"></canvas></div><div class="empty" id="e-ac" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
       <div class="card mt"><div class="cardhead"><div><h3 data-i18n="rwaHistT">RWA growth by category (DeFi TVL)</h3></div><div class="rangebtns"><button class="rb" data-target="chRwaHist" data-range="1M">1M</button><button class="rb" data-target="chRwaHist" data-range="3M">3M</button><button class="rb" data-target="chRwaHist" data-range="6M">6M</button><button class="rb" data-target="chRwaHist" data-range="1Y">1Y</button><button class="rb" data-target="chRwaHist" data-range="ALL">ALL</button></div></div><div class="cc tall"><canvas id="chRwaHist"></canvas></div><div class="empty" id="e-rwahist" style="display:none" data-i18n="await">Awaiting the first data collection.</div></div>
       <div class="card mt"><div class="cardhead"><div><h3 data-i18n="rwaC2T">Detailed ranking</h3><p class="hint" data-i18n="rwaC2H">TVL, networks and 24h change.</p></div><input class="search" id="rwaSearch" data-ph="searchPh" placeholder="Search…"/></div>
         <div style="overflow:auto"><table id="rwaTable"><thead><tr><th class="rank">#</th><th data-i18n="thProto">Protocol</th><th data-i18n="thCat">Category</th><th data-i18n="thNetworks">Networks</th><th class="num">TVL</th><th class="num">24h</th></tr></thead><tbody></tbody></table></div>
@@ -245,6 +246,7 @@ const DICT={
     greenHero:"Combined market cap",greenCount:"Assets tracked",greenChartT:"Top green assets by market cap",greenTableT:"Sustainable assets",thReason:"Why green",thConsensus:"Consensus",thVol:"24h vol",
     reason_pos:"Proof-of-Stake",reason_low_energy:"Low energy",reason_carbon_negative:"Carbon negative",reason_carbon_neutral:"Carbon neutral",reason_efficient_pos:"Efficient PoS",reason_refi:"ReFi",reason_feeless:"Feeless",reason_eco_farming:"Eco farming",reason_carbon:"Carbon market",reason_energy:"Energy sector",
     kRwaTvl:"Total RWA TVL",kRwaN:"RWA protocols",rwaCatT:"RWA by category",rwaCatH:"Approximate split by asset type (curated).",
+    acT:"Tokenized asset classes (market value)",acH:"Market value by asset class of listed tokens (treasuries, gold, stocks…). Source: CoinGecko.",acTreasuries:"Treasuries",acGold:"Gold",acStocks:"Stocks",acReal_estate:"Real estate",acCommodities:"Commodities",
     rwaC1T:"Top RWA protocols by TVL",rwaHistT:"RWA growth by category (DeFi TVL)",rwaC2T:"Detailed ranking",rwaC2H:"TVL, networks and 24h change.",thProto:"Protocol",thNetworks:"Networks",thNetwork:"Network",thCat:"Category",
     stblHero:"Total stablecoin cap",stblCount:"Stablecoins tracked",stblHistT:"Stablecoin supply over time",stblTableT:"Top stablecoins",thStable:"Stablecoin",thPeg:"Peg",thCap:"Market cap",
     kTvl:"Total DeFi TVL",kStable:"Stablecoin cap",kChains:"Networks tracked",tvlHistT:"DeFi TVL over time",defiC1T:"Top 15 networks by TVL",defiC2T:"Network ranking",
@@ -263,6 +265,7 @@ const DICT={
     greenHero:"Cap. de mercado combinada",greenCount:"Ativos monitorados",greenChartT:"Maiores ativos verdes por capitalização",greenTableT:"Ativos sustentáveis",thReason:"Por que é verde",thConsensus:"Consenso",thVol:"Vol 24h",
     reason_pos:"Proof-of-Stake",reason_low_energy:"Baixo consumo",reason_carbon_negative:"Carbono negativo",reason_carbon_neutral:"Carbono neutro",reason_efficient_pos:"PoS eficiente",reason_refi:"ReFi",reason_feeless:"Sem taxas",reason_eco_farming:"Cultivo ecológico",reason_carbon:"Mercado de carbono",reason_energy:"Setor de energia",
     kRwaTvl:"TVL total em RWA",kRwaN:"Protocolos RWA",rwaCatT:"RWA por categoria",rwaCatH:"Divisão aproximada por tipo de ativo (curada).",
+    acT:"Classes de ativos tokenizados (valor de mercado)",acH:"Valor de mercado por classe de ativo dos tokens listados (tesouraria, ouro, ações…). Fonte: CoinGecko.",acTreasuries:"Tesouraria",acGold:"Ouro",acStocks:"Ações",acReal_estate:"Imóveis",acCommodities:"Commodities",
     rwaC1T:"Top protocolos RWA por TVL",rwaHistT:"Evolução do RWA por categoria (TVL em DeFi)",rwaC2T:"Ranking detalhado",rwaC2H:"TVL, redes e variação em 24h.",thProto:"Protocolo",thNetworks:"Redes",thNetwork:"Rede",thCat:"Categoria",
     stblHero:"Cap. total de stablecoins",stblCount:"Stablecoins monitoradas",stblHistT:"Evolução da oferta de stablecoins",stblTableT:"Maiores stablecoins",thStable:"Stablecoin",thPeg:"Lastro",thCap:"Cap. mercado",
     kTvl:"TVL total em DeFi",kStable:"Cap. de stablecoins",kChains:"Redes monitoradas",tvlHistT:"Evolução do TVL em DeFi",defiC1T:"Top 15 redes por TVL",defiC2T:"Ranking de redes",
@@ -276,6 +279,7 @@ const t=(k)=>DICT[LANG][k]||k;
 const loc=()=>LANG==='pt'?'pt-BR':'en-US';
 const el=(id)=>document.getElementById(id);
 const catLabel=(c)=>t('cat'+c.charAt(0).toUpperCase()+c.slice(1));
+const acLabel=(c)=>t('ac'+c.charAt(0).toUpperCase()+c.slice(1));
 const fmtUSD=(n)=>{if(n==null||isNaN(n))return '—';const a=Math.abs(n);
   if(a>=1e12)return '$'+(n/1e12).toFixed(2)+'T';if(a>=1e9)return '$'+(n/1e9).toFixed(2)+'B';
   if(a>=1e6)return '$'+(n/1e6).toFixed(2)+'M';if(a>=1e3)return '$'+(n/1e3).toFixed(2)+'k';return '$'+n.toFixed(2);};
@@ -406,6 +410,9 @@ function renderRwa(r){
   const hbc=r.history_by_cat;
   if(hbc&&hbc.series&&hbc.series.length){el('e-rwahist').style.display='none';histStack('chRwaHist',hbc.cats,hbc.cats.map(catLabel),hbc.series);}
   else el('e-rwahist').style.display='block';
+  const ac=r.asset_classes;
+  if(ac&&ac.classes&&ac.classes.length){el('e-ac').style.display='none';barY('chAssetClass',ac.classes.map(x=>acLabel(x.cat)),ac.classes.map(x=>x.market_cap),t('lblMcap'));}
+  else el('e-ac').style.display='block';
   el('rwaTable').tBodies[0].innerHTML=ps.map((p,i)=>{const c=p.change_1d;const cls=c==null?'':(c>=0?'up':'down');const cat=p.cat||classifyRwa(p.name);const col=CATCOLOR[cat]||'#94a3b8';
     return `<tr><td class="rank">${i+1}</td><td class="nm">${p.name||''}</td><td><span class="catdot" style="background:${col}"></span>${catLabel(cat)}</td><td style="color:var(--muted)">${(p.chains||[]).join(', ')}</td>
       <td class="num" data-v="${p.tvl??''}">${fmtUSD(p.tvl)}</td><td class="num ${cls}" data-v="${c??''}">${c==null?'':fmtPct(c)}</td></tr>`;}).join('')||emptyRow(6);
@@ -537,7 +544,7 @@ async function init(){
     LAST=await fetch('./data/data.json?_='+Date.now()).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();});
   }catch(e){
     const b=el('banner');b.style.display='block';
-    ['e-coins','e-rwa','e-rwahist','e-stbl','e-defi'].forEach(id=>el(id).style.display='block');
+    ['e-coins','e-rwa','e-rwahist','e-ac','e-stbl','e-defi'].forEach(id=>el(id).style.display='block');
   }
   applyLang();
 }
