@@ -14,7 +14,7 @@ import json, urllib.request, datetime, sys, os
 
 UA = {"User-Agent": "observatorio-rwa/2.0 (+github-actions)"}
 TIMEOUT = 90
-HIST_POINTS = 180  # ~6 meses de pontos diários nos gráficos de evolução
+HIST_POINTS = 1500  # ~4 anos de pontos diários (permite os intervalos 1M/3M/6M/1Y/ALL)
 
 
 def get(url):
@@ -92,6 +92,50 @@ def classify_rwa(name):
             return cat
     return "other"
 
+def build_rwa_history(rwa_protocols):
+    """Monta a evolução do TVL de RWA por categoria (para o gráfico de área empilhada).
+    Usa o histórico de cada protocolo (endpoint gratuito /protocol/{slug}), classifica em
+    categoria e soma por dia. Retorna {cats:[...], series:[[date_ms,[v_cat1,...]], ...]}."""
+    sel = rwa_protocols[:40]  # os 40 maiores já cobrem ~99% do TVL total de RWA
+    per_proto, all_days = [], set()
+    for p in sel:
+        slug = p.get("slug") or (p.get("name") or "").lower().replace(" ", "-")
+        cat = classify_rwa(p.get("name"))
+        d = safe(lambda: get(f"https://api.llama.fi/protocol/{slug}"), f"hist rwa {slug}")
+        if not d:
+            continue
+        series = {}
+        for pt in (d.get("tvl") or []):
+            ts, v = pt.get("date"), pt.get("totalLiquidityUSD")
+            if ts is None or v is None:
+                continue
+            day = int(ts) - (int(ts) % 86400)  # arredonda para o início do dia (UTC)
+            series[day] = v                    # último valor do dia prevalece
+            all_days.add(day)
+        if series:
+            per_proto.append((cat, series))
+    if not all_days:
+        return None
+    days = sorted(all_days)
+    day_cat = {d: {} for d in days}
+    cats_seen = {}
+    for cat, series in per_proto:
+        first = min(series)
+        last_val = None
+        for d in days:                         # repete o último valor conhecido (forward-fill)
+            if d < first:
+                continue
+            if d in series:
+                last_val = series[d]
+            if last_val is not None:
+                day_cat[d][cat] = day_cat[d].get(cat, 0.0) + last_val
+        cats_seen[cat] = True
+    last_day = days[-1]
+    cats = sorted(cats_seen, key=lambda c: day_cat[last_day].get(c, 0), reverse=True)
+    series_out = [[d * 1000, [round(day_cat[d].get(c, 0.0)) for c in cats]] for d in days]
+    return {"cats": cats, "series": downsample(series_out)}
+
+
 def build_rwa():
     protocols = get("https://api.llama.fi/protocols")
     rwa = [p for p in protocols if (p.get("category") == "RWA") and p.get("tvl")]
@@ -106,7 +150,9 @@ def build_rwa():
         d["tvl"] += p.get("tvl") or 0
         d["count"] += 1
     categories = sorted(cats.values(), key=lambda x: x["tvl"], reverse=True)
-    return {"total_tvl": total, "count": len(rwa), "protocols": top, "categories": categories}
+    hist = safe(lambda: build_rwa_history(rwa), "rwa history")
+    return {"total_tvl": total, "count": len(rwa), "protocols": top,
+            "categories": categories, "history_by_cat": hist}
 
 
 # ---------------- STABLECOINS (DefiLlama) ----------------
