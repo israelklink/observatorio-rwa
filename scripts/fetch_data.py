@@ -213,7 +213,27 @@ QPC_MAP = {
     "CELL": "lattice", "QANX": "lattice", "ABEL": "lattice", "QRN": "lattice",
     "QUBIC": "lattice", "QAN": "lattice",
     "ALGO": "falcon",
+    "STRK": "stark",
+    "FHE": "fhe",
+    "NAORIS": "security",
     "NXS": "planned",
+}
+
+# Metadados curados (aproximados; revisar). type/status são neutros; nist e readiness são curados.
+QMETA = {
+    "QRL":   {"type": "L1", "nist": "SLH-DSA family (XMSS)", "readiness": "native",  "status": "Mainnet"},
+    "ALGO":  {"type": "L1", "nist": "FN-DSA (Falcon)",       "readiness": "hybrid",  "status": "Mainnet"},
+    "QANX":  {"type": "L1", "nist": "ML-DSA (Dilithium)",    "readiness": "native",  "status": "Mainnet"},
+    "CELL":  {"type": "L1", "nist": "ML-DSA (Dilithium)",    "readiness": "native",  "status": "Mainnet"},
+    "ABEL":  {"type": "L1", "nist": "Lattice",               "readiness": "native",  "status": "Mainnet"},
+    "IOTA":  {"type": "L1", "nist": "Hash (WOTS, legacy)",   "readiness": "roadmap", "status": "Mainnet"},
+    "MIOTA": {"type": "L1", "nist": "Hash (WOTS, legacy)",   "readiness": "roadmap", "status": "Mainnet"},
+    "STRK":  {"type": "L2", "nist": "STARK (hash)",          "readiness": "hybrid",  "status": "Mainnet"},
+    "NAORIS":{"type": "Security", "nist": "ML-DSA (Dilithium)", "readiness": "native", "status": "Testnet"},
+    "FHE":   {"type": "L1", "nist": "FHE",                   "readiness": "native",  "status": "Testnet"},
+    "QUBIC": {"type": "L1", "nist": "Lattice",               "readiness": "native",  "status": "Mainnet"},
+    "MCM":   {"type": "L1", "nist": "Hash (WOTS+)",          "readiness": "native",  "status": "Mainnet"},
+    "NXS":   {"type": "L1", "nist": "—",                     "readiness": "roadmap", "status": "Mainnet"},
 }
 
 def build_quantum():
@@ -228,11 +248,14 @@ def build_quantum():
     assets = []
     for x in data:
         sym = (x.get("symbol") or "").upper()
+        m = QMETA.get(sym) or {}
         assets.append({"name": x.get("name"), "symbol": sym, "price": x.get("current_price"),
             "market_cap": x.get("market_cap"),
             "change_24h": x.get("price_change_percentage_24h"),
             "change_7d": x.get("price_change_percentage_7d_in_currency"),
-            "approach": QPC_MAP.get(sym)})
+            "approach": QPC_MAP.get(sym),
+            "type": m.get("type"), "nist": m.get("nist"),
+            "readiness": m.get("readiness"), "status": m.get("status")})
     total = mc if mc is not None else sum((a["market_cap"] or 0) for a in assets)
     return {"total_mcap": total, "count": len(assets), "assets": assets}
 
