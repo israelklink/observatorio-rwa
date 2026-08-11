@@ -108,6 +108,12 @@
   .nm{font-weight:600}.sym{color:var(--muted);font-weight:500;font-size:12px;margin-left:6px}
   .tag{font-family:var(--mono);font-size:10px;color:var(--accent2);background:var(--soft);padding:2px 7px;border-radius:5px}
   .tag.g{color:#8ff0a4;background:rgba(63,185,80,.14)}
+  .rd-native{color:#7ee787;font-family:var(--mono);font-size:12px}
+  .rd-hybrid{color:#e3b341;font-family:var(--mono);font-size:12px}
+  .rd-roadmap{color:var(--muted);font-family:var(--mono);font-size:12px}
+  .qt-row{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+  .qt-row:last-child{border-bottom:0}
+  .qt-y{font-family:var(--mono);color:var(--accent2);white-space:nowrap;min-width:66px;font-size:12px}
   .catdot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:7px;vertical-align:middle}
   .empty{color:var(--muted);font-size:14px;padding:14px 0}
   .movers{display:grid;grid-template-columns:1fr 1fr;gap:26px}
@@ -263,11 +269,25 @@
     <!-- POST-QUANTUM -->
     <section class="page" id="page-quantum">
       <h2 class="ptitle" data-i18n="tabQuantum">Post-Quantum</h2>
-      <p class="hint" style="margin:-8px 0 16px;max-width:74ch" data-i18n="qH">Blockchains tagged as quantum-resistant by CoinGecko, with live market data. The "technology" column is curated; source tags are self-declared and post-quantum maturity varies by project.</p>
+      <p class="hint" style="margin:-8px 0 16px;max-width:78ch" data-i18n="qH">Blockchains tagged as quantum-resistant by CoinGecko, with live market data. The technology column is curated; source tags are self-declared and post-quantum maturity varies by project.</p>
       <div class="hero"><div><div class="lbl" data-i18n="qHero">Combined market cap</div><div class="big" id="k-q-mcap">—</div></div></div>
       <div class="strip"><div class="stat"><div class="k" data-i18n="qCount">Projects tracked</div><div class="v" id="k-q-n">—</div></div></div>
-      <div class="card"><div class="cardhead"><div><h3 data-i18n="qTableT">Quantum-resistant projects</h3></div><input class="search" id="qSearch" data-ph="searchPh" placeholder="Search…"/></div>
-        <div style="overflow:auto"><table id="qTable"><thead><tr><th class="rank">#</th><th data-i18n="thCoin">Asset</th><th data-i18n="qTech">Technology</th><th class="num" data-i18n="thPrice">Price</th><th class="num" data-i18n="thMcap">Market cap</th><th class="num">24h</th><th class="num">7d</th></tr></thead><tbody></tbody></table></div>
+      <div class="grid g2">
+        <div class="card"><div class="cardhead"><div><h3 data-i18n="qEduT">The quantum threat, in short</h3></div></div>
+          <p style="color:var(--ink);font-size:14px;margin:0 0 10px" data-i18n="qEdu1">A large quantum computer running Shor's algorithm could break the elliptic-curve signatures (ECDSA) that protect most blockchain wallets — letting an attacker forge signatures and move funds.</p>
+          <p style="color:var(--ink);font-size:14px;margin:0 0 12px" data-i18n="qEdu2">The risk is already present via "harvest-now, decrypt-later": data captured today can be broken later. In 2024 the NIST finalized the first post-quantum cryptography (PQC) standards:</p>
+          <div style="font-family:var(--mono);font-size:12px;color:var(--muted);line-height:2">
+            <div><span class="tag">FIPS 203</span> ML-KEM (Kyber) — <span data-i18n="qKem">key encapsulation</span></div>
+            <div><span class="tag">FIPS 204</span> ML-DSA (Dilithium) — <span data-i18n="qSig">signatures</span></div>
+            <div><span class="tag">FIPS 205</span> SLH-DSA (SPHINCS+) — <span data-i18n="qHashsig">hash-based signatures</span></div>
+          </div>
+        </div>
+        <div class="card"><div class="cardhead"><div><h3 data-i18n="qTimeT">Quantum computing milestones</h3><p class="hint" data-i18n="qTimeH">Curated timeline of qubit milestones and the migration horizon.</p></div></div>
+          <div id="qtimeline"></div>
+        </div>
+      </div>
+      <div class="card mt"><div class="cardhead"><div><h3 data-i18n="qTableT">Quantum-resistant projects</h3></div><input class="search" id="qSearch" data-ph="searchPh" placeholder="Search…"/></div>
+        <div style="overflow:auto"><table id="qTable"><thead><tr><th class="rank">#</th><th data-i18n="thCoin">Asset</th><th data-i18n="qType">Type</th><th data-i18n="qTech">Technology</th><th data-i18n="qNist">NIST</th><th data-i18n="qReady">Readiness</th><th data-i18n="qStatus">Status</th><th class="num" data-i18n="thPrice">Price</th><th class="num" data-i18n="thMcap">Market cap</th><th class="num">24h</th><th class="num">7d</th></tr></thead><tbody></tbody></table></div>
       </div>
     </section>
   </main>
@@ -291,7 +311,8 @@ const DICT={
     stblHero:"Total stablecoin cap",stblCount:"Stablecoins tracked",stblHistT:"Stablecoin supply over time",stblTableT:"Top stablecoins",thStable:"Stablecoin",thPeg:"Peg",thCap:"Market cap",
     kTvl:"Total DeFi TVL",kStable:"Stablecoin cap",kChains:"Networks tracked",tvlHistT:"DeFi TVL over time",defiC1T:"Top 15 networks by TVL",defiC2T:"Network ranking",
     kDefiMcap:"DeFi market cap",kDefiDom:"DeFi dominance",sectorsT:"Crypto sectors by market cap",sectorsH:"Top categories by market value. Categories can overlap. Source: CoinGecko.",tabTreasury:"Treasuries",trH:"Public companies holding BTC and ETH in treasury. Source: CoinGecko.",trHero:"Total BTC held by companies (value)",trBtcAmt:"BTC held",trDom:"% of BTC supply",trEth:"Total ETH held (value)",trTableT:"Top public companies holding BTC",thCompany:"Company",thCountry:"Country",thHeld:"BTC held",thValue:"Value",thPctSupply:"% supply",
-    tabQuantum:"Post-Quantum",qH:"Blockchains tagged as quantum-resistant by CoinGecko, with live market data. The technology column is curated; source tags are self-declared and post-quantum maturity varies by project.",qHero:"Combined market cap",qCount:"Projects tracked",qTableT:"Quantum-resistant projects",qTech:"Technology",pqc_hash:"Hash-based (XMSS/WOTS)",pqc_lattice:"Lattice (Dilithium)",pqc_falcon:"Falcon",pqc_planned:"Planned",
+    tabQuantum:"Post-Quantum",qH:"Blockchains tagged as quantum-resistant by CoinGecko, with live market data. The technology column is curated; source tags are self-declared and post-quantum maturity varies by project.",qHero:"Combined market cap",qCount:"Projects tracked",qTableT:"Quantum-resistant projects",qTech:"Technology",pqc_hash:"Hash-based (XMSS/WOTS)",pqc_lattice:"Lattice (Dilithium)",pqc_falcon:"Falcon",pqc_planned:"Planned",pqc_stark:"STARK (hash)",pqc_fhe:"FHE",pqc_security:"PQC security layer",
+    qType:"Type",qNist:"NIST",qReady:"Readiness",qStatus:"Status",qEduT:"The quantum threat, in short",qEdu1:"A large quantum computer running Shor's algorithm could break the elliptic-curve signatures (ECDSA) that protect most blockchain wallets — letting an attacker forge signatures and move funds.",qEdu2:"The risk is already present via harvest-now, decrypt-later: data captured today can be broken later. In 2024 NIST finalized the first post-quantum cryptography (PQC) standards:",qKem:"key encapsulation",qSig:"signatures",qHashsig:"hash-based signatures",qTimeT:"Quantum computing milestones",qTimeH:"Curated timeline of qubit milestones and the migration horizon.",rd_native:"Native",rd_hybrid:"Hybrid",rd_roadmap:"Roadmap",
     await:"Awaiting the first data collection.",devBy:"Developed by",searchPh:"Search…",exportImg:"Save as PNG",exportCsv:"Export CSV",
     catTreasuries:"Treasuries",catPrivate_credit:"Private credit",catReal_estate:"Real estate",catCommodities:"Commodities",catEquities:"Equities",catOther:"Other",
     lblMcap:"Market cap (US$)",lblTvl:"TVL (US$)",lblSupply:"Supply (US$)",
@@ -312,7 +333,8 @@ const DICT={
     stblHero:"Cap. total de stablecoins",stblCount:"Stablecoins monitoradas",stblHistT:"Evolução da oferta de stablecoins",stblTableT:"Maiores stablecoins",thStable:"Stablecoin",thPeg:"Lastro",thCap:"Cap. mercado",
     kTvl:"TVL total em DeFi",kStable:"Cap. de stablecoins",kChains:"Redes monitoradas",tvlHistT:"Evolução do TVL em DeFi",defiC1T:"Top 15 redes por TVL",defiC2T:"Ranking de redes",
     kDefiMcap:"Cap. de mercado DeFi",kDefiDom:"Dominância DeFi",sectorsT:"Setores por capitalização",sectorsH:"Maiores categorias por valor de mercado. Categorias podem se sobrepor. Fonte: CoinGecko.",tabTreasury:"Tesourarias",trH:"Empresas públicas com BTC e ETH em tesouraria. Fonte: CoinGecko.",trHero:"Total de BTC em empresas (valor)",trBtcAmt:"BTC detido",trDom:"% do supply de BTC",trEth:"Total de ETH (valor)",trTableT:"Maiores empresas públicas com BTC",thCompany:"Empresa",thCountry:"País",thHeld:"BTC detido",thValue:"Valor",thPctSupply:"% do supply",
-    tabQuantum:"Pós-Quântico",qH:"Blockchains marcadas como resistentes a quântica pelo CoinGecko, com dados de mercado ao vivo. A coluna de tecnologia é curada; os rótulos da fonte são autodeclarados e a maturidade pós-quântica varia por projeto.",qHero:"Cap. de mercado combinada",qCount:"Projetos monitorados",qTableT:"Projetos resistentes a quântica",qTech:"Tecnologia",pqc_hash:"Hash-based (XMSS/WOTS)",pqc_lattice:"Lattice (Dilithium)",pqc_falcon:"Falcon",pqc_planned:"Planejado",
+    tabQuantum:"Pós-Quântico",qH:"Blockchains marcadas como resistentes a quântica pelo CoinGecko, com dados de mercado ao vivo. A coluna de tecnologia é curada; os rótulos da fonte são autodeclarados e a maturidade pós-quântica varia por projeto.",qHero:"Cap. de mercado combinada",qCount:"Projetos monitorados",qTableT:"Projetos resistentes a quântica",qTech:"Tecnologia",pqc_hash:"Hash-based (XMSS/WOTS)",pqc_lattice:"Lattice (Dilithium)",pqc_falcon:"Falcon",pqc_planned:"Planejado",pqc_stark:"STARK (hash)",pqc_fhe:"FHE",pqc_security:"Camada de segurança PQC",
+    qType:"Tipo",qNist:"NIST",qReady:"Prontidão",qStatus:"Status",qEduT:"A ameaça quântica, em resumo",qEdu1:"Um computador quântico grande rodando o algoritmo de Shor poderia quebrar as assinaturas de curva elíptica (ECDSA) que protegem a maioria das carteiras — permitindo forjar assinaturas e mover fundos.",qEdu2:"O risco já existe via harvest-now, decrypt-later: dados capturados hoje podem ser quebrados depois. Em 2024 o NIST finalizou os primeiros padrões de criptografia pós-quântica (PQC):",qKem:"encapsulamento de chave",qSig:"assinaturas",qHashsig:"assinaturas hash-based",qTimeT:"Marcos da computação quântica",qTimeH:"Linha do tempo curada de marcos de qubits e o horizonte de migração.",rd_native:"Nativa",rd_hybrid:"Híbrida",rd_roadmap:"Roadmap",
     await:"Aguardando a primeira coleta de dados.",devBy:"Desenvolvido por",searchPh:"Buscar…",exportImg:"Salvar como PNG",exportCsv:"Exportar CSV",
     catTreasuries:"Tesouraria",catPrivate_credit:"Crédito privado",catReal_estate:"Imóveis",catCommodities:"Commodities",catEquities:"Ações",catOther:"Outros",
     lblMcap:"Cap. de mercado (US$)",lblTvl:"TVL (US$)",lblSupply:"Oferta (US$)",
@@ -507,19 +529,34 @@ function renderTreasury(tr){
   }).join('')||emptyRow(6);
 }
 function pqcLabel(a){return a?t('pqc_'+a):'—';}
+var QTIME=[
+ {y:"2019",en:"Google Sycamore — 53 qubits (quantum-supremacy claim)",pt:"Google Sycamore — 53 qubits (alegação de supremacia)"},
+ {y:"2022",en:"IBM Osprey — 433 qubits",pt:"IBM Osprey — 433 qubits"},
+ {y:"2023",en:"IBM Condor — 1,121 qubits",pt:"IBM Condor — 1.121 qubits"},
+ {y:"2024",en:"Google Willow — below-threshold error correction",pt:"Google Willow — correção de erros abaixo do limiar"},
+ {y:"2024",en:"NIST finalizes first PQC standards (FIPS 203/204/205)",pt:"NIST finaliza os primeiros padrões PQC (FIPS 203/204/205)"},
+ {y:"~2030-35",en:"Estimated horizon for cryptographically-relevant quantum computers; NIST urges migration",pt:"Horizonte estimado para computadores quânticos criptograficamente relevantes; NIST recomenda migração"}
+];
+function renderTimeline(){var box=el('qtimeline');if(!box)return;
+  box.innerHTML=QTIME.map(function(m){return '<div class="qt-row"><span class="qt-y">'+m.y+'</span><span>'+(LANG==='pt'?m.pt:m.en)+'</span></div>';}).join('');}
 function renderQuantum(q){
   if(!q)return;
   el('k-q-mcap').textContent=fmtUSD(q.total_mcap);
   el('k-q-n').textContent=q.count!=null?q.count:'—';
   el('qTable').tBodies[0].innerHTML=(q.assets||[]).map(function(c,i){
     var ch=c.change_24h,c7=c.change_7d;var cls=ch==null?'':(ch>=0?'up':'down');var cls7=c7==null?'':(c7>=0?'up':'down');
+    var rd=c.readiness?'<span class="rd-'+c.readiness+'">'+t('rd_'+c.readiness)+'</span>':'<span style="color:var(--muted)">—</span>';
     return '<tr><td class="rank">'+(i+1)+'</td><td><span class="nm">'+(c.name||'')+'</span><span class="sym">'+((c.symbol||'').toUpperCase())+'</span></td>'
+      +'<td style="color:var(--muted)">'+(c.type||'—')+'</td>'
       +'<td>'+(c.approach?'<span class="tag">'+pqcLabel(c.approach)+'</span>':'<span style="color:var(--muted)">—</span>')+'</td>'
+      +'<td style="color:var(--muted);font-family:var(--mono);font-size:12px">'+(c.nist||'—')+'</td>'
+      +'<td>'+rd+'</td>'
+      +'<td style="color:var(--muted)">'+(c.status||'—')+'</td>'
       +'<td class="num" data-v="'+(c.price==null?'':c.price)+'">'+fmtPrice(c.price)+'</td>'
       +'<td class="num" data-v="'+(c.market_cap==null?'':c.market_cap)+'">'+fmtUSD(c.market_cap)+'</td>'
       +'<td class="num '+cls+'" data-v="'+(ch==null?'':ch)+'">'+(ch==null?'':fmtPct(ch))+'</td>'
       +'<td class="num '+cls7+'" data-v="'+(c7==null?'':c7)+'">'+(c7==null?'':fmtPct(c7))+'</td></tr>';
-  }).join('')||emptyRow(7);
+  }).join('')||emptyRow(11);
 }
 function renderAll(){
   clearCharts();
@@ -551,7 +588,7 @@ function applyLang(){
   document.querySelectorAll('.exp').forEach(e=>{e.title=t(e.dataset.fmt==='csv'?'exportCsv':'exportImg');});
   document.querySelectorAll('.lang button').forEach(b=>b.classList.toggle('active',b.dataset.lang===LANG));
   const b=el('banner');if(b.style.display==='block')b.innerHTML=t('banner');
-  renderAll();
+  renderAll();renderTimeline();
 }
 el('lang').addEventListener('click',(ev)=>{const b=ev.target.closest('button');if(!b)return;
   LANG=b.dataset.lang;localStorage.setItem('obs_lang',LANG);applyLang();});
