@@ -148,6 +148,7 @@
       <button class="navi" data-tab="green"><svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 014 13c0-5 4-9 12-9 0 6-2 12-5 16z"/><path d="M11 20c-1-4 1-8 5-11"/></svg><span data-i18n="tabGreen">Green assets</span></button>
       <button class="navi" data-tab="treasury"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/></svg><span data-i18n="tabTreasury">Treasuries</span></button>
       <button class="navi" data-tab="stables"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.2h4a1.8 1.8 0 010 3.6h-3a1.8 1.8 0 000 3.6h4"/></svg><span data-i18n="tabStables">Stablecoins</span></button>
+      <button class="navi" data-tab="quantum"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.2"/><ellipse cx="12" cy="12" rx="10" ry="4.4"/><ellipse cx="12" cy="12" rx="10" ry="4.4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4.4" transform="rotate(120 12 12)"/></svg><span data-i18n="tabQuantum">Post-Quantum</span></button>
     </nav>
     <div class="side-foot">
       <div class="lang" id="lang"><button data-lang="en">EN</button><button data-lang="pt">PT</button></div>
@@ -259,6 +260,16 @@
         <div style="overflow:auto"><table id="chainTable"><thead><tr><th class="rank">#</th><th data-i18n="thNetwork">Network</th><th class="num">TVL</th></tr></thead><tbody></tbody></table></div>
       </div>
     </section>
+    <!-- POST-QUANTUM -->
+    <section class="page" id="page-quantum">
+      <h2 class="ptitle" data-i18n="tabQuantum">Post-Quantum</h2>
+      <p class="hint" style="margin:-8px 0 16px;max-width:74ch" data-i18n="qH">Blockchains tagged as quantum-resistant by CoinGecko, with live market data. The "technology" column is curated; source tags are self-declared and post-quantum maturity varies by project.</p>
+      <div class="hero"><div><div class="lbl" data-i18n="qHero">Combined market cap</div><div class="big" id="k-q-mcap">—</div></div></div>
+      <div class="strip"><div class="stat"><div class="k" data-i18n="qCount">Projects tracked</div><div class="v" id="k-q-n">—</div></div></div>
+      <div class="card"><div class="cardhead"><div><h3 data-i18n="qTableT">Quantum-resistant projects</h3></div><input class="search" id="qSearch" data-ph="searchPh" placeholder="Search…"/></div>
+        <div style="overflow:auto"><table id="qTable"><thead><tr><th class="rank">#</th><th data-i18n="thCoin">Asset</th><th data-i18n="qTech">Technology</th><th class="num" data-i18n="thPrice">Price</th><th class="num" data-i18n="thMcap">Market cap</th><th class="num">24h</th><th class="num">7d</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </section>
   </main>
 </div>
 <script>
@@ -280,6 +291,7 @@ const DICT={
     stblHero:"Total stablecoin cap",stblCount:"Stablecoins tracked",stblHistT:"Stablecoin supply over time",stblTableT:"Top stablecoins",thStable:"Stablecoin",thPeg:"Peg",thCap:"Market cap",
     kTvl:"Total DeFi TVL",kStable:"Stablecoin cap",kChains:"Networks tracked",tvlHistT:"DeFi TVL over time",defiC1T:"Top 15 networks by TVL",defiC2T:"Network ranking",
     kDefiMcap:"DeFi market cap",kDefiDom:"DeFi dominance",sectorsT:"Crypto sectors by market cap",sectorsH:"Top categories by market value. Categories can overlap. Source: CoinGecko.",tabTreasury:"Treasuries",trH:"Public companies holding BTC and ETH in treasury. Source: CoinGecko.",trHero:"Total BTC held by companies (value)",trBtcAmt:"BTC held",trDom:"% of BTC supply",trEth:"Total ETH held (value)",trTableT:"Top public companies holding BTC",thCompany:"Company",thCountry:"Country",thHeld:"BTC held",thValue:"Value",thPctSupply:"% supply",
+    tabQuantum:"Post-Quantum",qH:"Blockchains tagged as quantum-resistant by CoinGecko, with live market data. The technology column is curated; source tags are self-declared and post-quantum maturity varies by project.",qHero:"Combined market cap",qCount:"Projects tracked",qTableT:"Quantum-resistant projects",qTech:"Technology",pqc_hash:"Hash-based (XMSS/WOTS)",pqc_lattice:"Lattice (Dilithium)",pqc_falcon:"Falcon",pqc_planned:"Planned",
     await:"Awaiting the first data collection.",devBy:"Developed by",searchPh:"Search…",exportImg:"Save as PNG",exportCsv:"Export CSV",
     catTreasuries:"Treasuries",catPrivate_credit:"Private credit",catReal_estate:"Real estate",catCommodities:"Commodities",catEquities:"Equities",catOther:"Other",
     lblMcap:"Market cap (US$)",lblTvl:"TVL (US$)",lblSupply:"Supply (US$)",
@@ -300,6 +312,7 @@ const DICT={
     stblHero:"Cap. total de stablecoins",stblCount:"Stablecoins monitoradas",stblHistT:"Evolução da oferta de stablecoins",stblTableT:"Maiores stablecoins",thStable:"Stablecoin",thPeg:"Lastro",thCap:"Cap. mercado",
     kTvl:"TVL total em DeFi",kStable:"Cap. de stablecoins",kChains:"Redes monitoradas",tvlHistT:"Evolução do TVL em DeFi",defiC1T:"Top 15 redes por TVL",defiC2T:"Ranking de redes",
     kDefiMcap:"Cap. de mercado DeFi",kDefiDom:"Dominância DeFi",sectorsT:"Setores por capitalização",sectorsH:"Maiores categorias por valor de mercado. Categorias podem se sobrepor. Fonte: CoinGecko.",tabTreasury:"Tesourarias",trH:"Empresas públicas com BTC e ETH em tesouraria. Fonte: CoinGecko.",trHero:"Total de BTC em empresas (valor)",trBtcAmt:"BTC detido",trDom:"% do supply de BTC",trEth:"Total de ETH (valor)",trTableT:"Maiores empresas públicas com BTC",thCompany:"Empresa",thCountry:"País",thHeld:"BTC detido",thValue:"Valor",thPctSupply:"% do supply",
+    tabQuantum:"Pós-Quântico",qH:"Blockchains marcadas como resistentes a quântica pelo CoinGecko, com dados de mercado ao vivo. A coluna de tecnologia é curada; os rótulos da fonte são autodeclarados e a maturidade pós-quântica varia por projeto.",qHero:"Cap. de mercado combinada",qCount:"Projetos monitorados",qTableT:"Projetos resistentes a quântica",qTech:"Tecnologia",pqc_hash:"Hash-based (XMSS/WOTS)",pqc_lattice:"Lattice (Dilithium)",pqc_falcon:"Falcon",pqc_planned:"Planejado",
     await:"Aguardando a primeira coleta de dados.",devBy:"Desenvolvido por",searchPh:"Buscar…",exportImg:"Salvar como PNG",exportCsv:"Exportar CSV",
     catTreasuries:"Tesouraria",catPrivate_credit:"Crédito privado",catReal_estate:"Imóveis",catCommodities:"Commodities",catEquities:"Ações",catOther:"Outros",
     lblMcap:"Cap. de mercado (US$)",lblTvl:"TVL (US$)",lblSupply:"Oferta (US$)",
@@ -493,11 +506,26 @@ function renderTreasury(tr){
       +'<td class="num" data-v="'+(c.pct_supply==null?'':c.pct_supply)+'">'+(c.pct_supply!=null?c.pct_supply.toFixed(3)+'%':'—')+'</td></tr>';
   }).join('')||emptyRow(6);
 }
+function pqcLabel(a){return a?t('pqc_'+a):'—';}
+function renderQuantum(q){
+  if(!q)return;
+  el('k-q-mcap').textContent=fmtUSD(q.total_mcap);
+  el('k-q-n').textContent=q.count!=null?q.count:'—';
+  el('qTable').tBodies[0].innerHTML=(q.assets||[]).map(function(c,i){
+    var ch=c.change_24h,c7=c.change_7d;var cls=ch==null?'':(ch>=0?'up':'down');var cls7=c7==null?'':(c7>=0?'up':'down');
+    return '<tr><td class="rank">'+(i+1)+'</td><td><span class="nm">'+(c.name||'')+'</span><span class="sym">'+((c.symbol||'').toUpperCase())+'</span></td>'
+      +'<td>'+(c.approach?'<span class="tag">'+pqcLabel(c.approach)+'</span>':'<span style="color:var(--muted)">—</span>')+'</td>'
+      +'<td class="num" data-v="'+(c.price==null?'':c.price)+'">'+fmtPrice(c.price)+'</td>'
+      +'<td class="num" data-v="'+(c.market_cap==null?'':c.market_cap)+'">'+fmtUSD(c.market_cap)+'</td>'
+      +'<td class="num '+cls+'" data-v="'+(ch==null?'':ch)+'">'+(ch==null?'':fmtPct(ch))+'</td>'
+      +'<td class="num '+cls7+'" data-v="'+(c7==null?'':c7)+'">'+(c7==null?'':fmtPct(c7))+'</td></tr>';
+  }).join('')||emptyRow(7);
+}
 function renderAll(){
   clearCharts();
   if(LAST){
     if(LAST.updated_at)el('updated').textContent=new Date(LAST.updated_at).toLocaleString(loc());
-    renderFng(LAST.fng);renderMacro(LAST.macro);renderSectors(LAST.sectors);renderGreen(LAST.green);renderRwa(LAST.rwa);renderTreasury(LAST.treasury);renderStables(LAST.stables);renderDefi(LAST.defi);
+    renderFng(LAST.fng);renderMacro(LAST.macro);renderSectors(LAST.sectors);renderGreen(LAST.green);renderRwa(LAST.rwa);renderTreasury(LAST.treasury);renderStables(LAST.stables);renderDefi(LAST.defi);renderQuantum(LAST.quantum);
   }
 }
 /* ---- ordenação + busca ---- */
@@ -590,9 +618,9 @@ document.addEventListener('click',function(ev){
 });
 /* ===================== INÍCIO ===================== */
 async function init(){
-  ['coinTable','greenTable','rwaTable','trTable','stblTable','chainTable'].forEach(enhanceTable);
+  ['coinTable','greenTable','rwaTable','trTable','stblTable','chainTable','qTable'].forEach(enhanceTable);
   enhanceSearch('coinSearch','coinTable');enhanceSearch('greenSearch','greenTable');enhanceSearch('trSearch','trTable');
-  enhanceSearch('rwaSearch','rwaTable');enhanceSearch('stblSearch','stblTable');enhanceSearch('chainSearch','chainTable');
+  enhanceSearch('rwaSearch','rwaTable');enhanceSearch('stblSearch','stblTable');enhanceSearch('chainSearch','chainTable');enhanceSearch('qSearch','qTable');
   setupExports();
   try{
     LAST=await fetch('./data/data.json?_='+Date.now()).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();});
