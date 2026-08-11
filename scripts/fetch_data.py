@@ -207,6 +207,35 @@ def build_treasury():
     return {"btc": safe(lambda: _treasury("bitcoin"), "treasury btc"),
             "eth": safe(lambda: _treasury("ethereum"), "treasury eth")}
 
+# Blockchains pós-quânticas — categoria "Quantum-Resistant" do CoinGecko + tecnologia curada
+QPC_MAP = {
+    "QRL": "hash", "MCM": "hash", "MOCHIMO": "hash", "IOTA": "hash", "MIOTA": "hash",
+    "CELL": "lattice", "QANX": "lattice", "ABEL": "lattice", "QRN": "lattice",
+    "QUBIC": "lattice", "QAN": "lattice",
+    "ALGO": "falcon",
+    "NXS": "planned",
+}
+
+def build_quantum():
+    cid, mc = None, None
+    for c in cg_categories():
+        if "quantum" in (c.get("name") or "").lower():
+            cid, mc = c.get("id"), c.get("market_cap"); break
+    if not cid:
+        return None
+    data = cg_get("/coins/markets?vs_currency=usd&category=" + cid +
+                  "&order=market_cap_desc&per_page=50&page=1&price_change_percentage=24h,7d") or []
+    assets = []
+    for x in data:
+        sym = (x.get("symbol") or "").upper()
+        assets.append({"name": x.get("name"), "symbol": sym, "price": x.get("current_price"),
+            "market_cap": x.get("market_cap"),
+            "change_24h": x.get("price_change_percentage_24h"),
+            "change_7d": x.get("price_change_percentage_7d_in_currency"),
+            "approach": QPC_MAP.get(sym)})
+    total = mc if mc is not None else sum((a["market_cap"] or 0) for a in assets)
+    return {"total_mcap": total, "count": len(assets), "assets": assets}
+
 def _cg_class(name, cid):
     s = (name or "").lower() + " " + (cid or "").lower()
     if not ("tokeniz" in s or "real world" in s or "rwa" in s):
@@ -327,6 +356,7 @@ def main():
         "rwa": safe(build_rwa, "rwa"),
         "sectors": safe(build_sectors, "sectors"),
         "treasury": safe(build_treasury, "treasury"),
+        "quantum": safe(build_quantum, "quantum"),
         "stables": stables,
         "defi": safe(lambda: build_defi(stables_total), "defi"),
     }
